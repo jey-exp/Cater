@@ -8,7 +8,6 @@ const Catersignin= async(req,res)=>{
     console.log("Signing in Cater");
     
     const {name, gmail, pass} = req.body;
-    console.log("Log from cater signin :", name+"-"+gmail+"-"+pass);
     try {
         const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE name=$1 OR email=$2",[name,gmail]);
         if (emailAlreadyExists.rowCount!=0){
@@ -56,14 +55,13 @@ const CaterLogin = async(req,res)=>{
 const getSpecificCater = async(req,res)=>{
     console.log("Get specific cater");
     const {caterEmail}= req.body;
-    console.log("Cater Email : ", caterEmail);
+    console.log(caterEmail);
     if(!caterEmail){
-        return res.json({msg:"No cater name received!"})
+        return res.json({msg:"No cater Email received!"})
     }
     try {
         const response = await client.query("SELECT * FROM cater WHERE email=$1", [caterEmail]);        
         const caterDetails = response.rows[0];
-        console.log(caterDetails);
         return res.status(200).json({msg:"Success", caterDetails: caterDetails,});
     } catch (error) {
         console.log("Error in get specific cater : ", error);
@@ -71,4 +69,16 @@ const getSpecificCater = async(req,res)=>{
     }
 }
 
-module.exports = {Catersignin,CaterLogin, getSpecificCater};
+const updateCaterDetails = async (req,res)=>{
+    console.log("Updating cater details");
+    const {name, about, location, email} = req.body;
+    try {
+        const response = await client.query("update cater set name = $1 , location = $2, about = $3 where email=$4", [name, location, about, email]);
+        return res.status(200).json({msg:"Success"});
+    } catch (error) {
+        console.log("Error from update cater details : ", error);
+        return res.status(200).json({msg:"Error while updating!"});
+    }
+}
+
+module.exports = {Catersignin,CaterLogin, getSpecificCater, updateCaterDetails};

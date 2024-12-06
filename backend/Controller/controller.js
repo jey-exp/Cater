@@ -103,16 +103,15 @@ const getCatermenu = async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(400).json({ msg: "No such catering exists!" });
+      return res.json({ msg: "No such catering exists!" });
     }
 
     res
       .status(200)
-      .json({ msg: "Success in getting catering name", data: result.rows });
+      .json({ msg: "Success in getting catering menu", data: result.rows });
   } catch (err) {
     console.error("Error querying the database", err);
     res
-      .status(500)
       .json({ msg: "An error occurred while retrieving the catering menu." });
   }
 };
@@ -141,15 +140,17 @@ const create_checkout_session = async (req, res) => {
 };
 
 const getallCater = async (req, res) => {
+  console.log("getting all cater");
+  
   try {
-    const response = await client.query("select * from cater");
+    const response = await client.query("select * from cater where complete = 'true'");
     if (response.rowCount === 0) {
       res.status(400).json({ msg: "No catering found !" });
       console.log("No cater found");
     }
     res.status(200).json({ data: response.rows });
   } catch (error) {
-    console.log("Error in getting cater details");
+    console.log("Error in getting cater details", error);
   }
 };
 
