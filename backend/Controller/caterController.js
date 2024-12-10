@@ -30,7 +30,6 @@ const CaterLogin = async(req,res)=>{
     console.log("req : ", gmail, "-", pass);
     
     try {
-        // const hashedPassword= bcrypt.compare
         const result = await client.query("SELECT * FROM cater WHERE email=$1", [gmail]);
         if(result.rowCount===0){
             res.json({msg:"User not found"});
@@ -81,4 +80,22 @@ const updateCaterDetails = async (req,res)=>{
     }
 }
 
-module.exports = {Catersignin,CaterLogin, getSpecificCater, updateCaterDetails};
+
+const addMenuRow = async (req,res)=>{
+    console.log("Adding menu row");
+    const data = req.body;
+    if(!data) {
+        return res.json({msg:"No data is sent"});
+    }
+    try {
+        const response = await client.query('SELECT name FROM cater where email=$1', [data[0]]);
+        const caterName = response.rows[0].name;
+        await client.query('INSERT INTO catermenu VALUES($1,$2,$3,$4,$5, $6, $7, $8)', [caterName, data[2], data[3], data[4], data[5], data[6], data[1], data[0]]);
+        return res.json({msg:"Success"});
+    } catch (error) {
+        console.log("Error in adding new row : ", error);
+        return res.json({msg:"Error in adding new row ", error});
+    }
+}
+
+module.exports = {Catersignin,CaterLogin, getSpecificCater, updateCaterDetails, addMenuRow};

@@ -10,7 +10,7 @@ const {
   getOrderDetails,
 } = require("../Controller/controller");
 
-const {Catersignin, CaterLogin, getSpecificCater, updateCaterDetails} = require("../Controller/caterController");
+const {Catersignin, CaterLogin, getSpecificCater, updateCaterDetails, addMenuRow} = require("../Controller/caterController");
 
 router.route("/signin").post(register);
 router.route("/login").post(login);
@@ -23,5 +23,6 @@ router.route("/caterapp/signin").post(Catersignin);
 router.route("/caterapp/login").post(CaterLogin);
 router.route("/getspecificcater").post(getSpecificCater);
 router.route("/caterapp/updatecater").post(updateCaterDetails);
+router.route("/caterapp/addmenurow").post(addMenuRow);
 
 module.exports = router;
