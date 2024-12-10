@@ -46,6 +46,7 @@ const DietPlan = () => {
   const navigate = useNavigate();
   const { catername } = useParams();
   const { isAuthenticated, gmail } = useAuth();
+  const [caterEmail, setCaterEmail] = useState();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -63,6 +64,7 @@ const DietPlan = () => {
         setBreakfast(data.data.filter((item) => item.time === "Breakfast"));
         setLunch(data.data.filter((item) => item.time === "Lunch"));
         setDinner(data.data.filter((item) => item.time === "Dinner"));
+        setCaterEmail(response.data.data[0].email);
       } catch (err) {
         console.log("Error in fetching data in diet plan", err);
       }
@@ -87,12 +89,11 @@ const DietPlan = () => {
 
   const addtouserProfile = async () => {
     try {
-      const data = { gmail, catername, totalAmount };
+      const data = { gmail, catername, totalAmount, caterEmail };
       const response = await axios.post(
         "http://localhost:3000/api/v1/addodertoprofile",
         data
       );
-      console.log(response.data.msg);
     } catch (error) {
       console.log("Error in addtoUserProfile", error);
     }

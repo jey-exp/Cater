@@ -20,6 +20,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("gmail", JSON.stringify(gmail));
   }, [gmail]);
 
+  useEffect(()=>{
+    localStorage.setItem("caterEmail", JSON.stringify(caterEmail));
+  },[caterEmail]);
+
+  useEffect(()=>{
+      localStorage.setItem("caterAuth", JSON.stringify(isCaterAuthenticated))
+  },[isCaterAuthenticated])
+
   const login = () => setIsAuthenticated(true);
   const logout = () => setIsAuthenticated(false);
   const caterLogin = () =>setCaterAuthenticated(true);

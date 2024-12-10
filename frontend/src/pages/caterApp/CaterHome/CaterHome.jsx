@@ -9,7 +9,6 @@ import axios from 'axios'
 
 const CaterHome = () => {
     const {caterEmail} = useAuth();
-    const [caterDetails, setCaterDetails] = useState();
   return (
     <div className='w-auto min-h-screen bg-blue-50 flex flex-col gap-10 items-center pb-10'>
       <CaterNavBar/>
