@@ -105,9 +105,9 @@ const UserProfile = () => {
                         {index + 1}
                       </StyledTableCell>
                       <StyledTableCell>{row.catername}</StyledTableCell>
-                      <StyledTableCell>₹{row.amount}</StyledTableCell>
+                      <StyledTableCell>₹{row.price}</StyledTableCell>
                       <StyledTableCell>
-                        {row.order_date.split("T")[0]}
+                        {row.orderdate.split("T")[0]}
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}

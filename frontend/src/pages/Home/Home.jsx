@@ -18,7 +18,6 @@ const Home = () => {
 
 
   useEffect(() => {
-    console.log(gmail);
     if (!isAuthenticated) {
       navigate("/notauthenticated");
     } else {
@@ -28,10 +27,8 @@ const Home = () => {
             "http://localhost:3000/api/v1/getallcater"
           );
           const data = response.data;
-          setTimeout(() => {
-            setLoading(false);
-            setcater(data.data);
-          }, 1000);
+          setLoading(false);
+          setcater(data.data);
         } catch (err) {
           toast.error("Error, Please try again later.")
           console.log("Error in fetching cater details", err);

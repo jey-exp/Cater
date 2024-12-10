@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {client} = require("../DB/connectDB");
 const { StatusCodes } = require("http-status-codes");
+const { json } = require("express");
 
 
 const Catersignin= async(req,res)=>{
@@ -45,7 +46,7 @@ const CaterLogin = async(req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
+        console.log("Error during cater login",error);
         res.json({msg:"Internal server error"});
     }
 }
@@ -73,6 +74,16 @@ const updateCaterDetails = async (req,res)=>{
     const {name, about, location, email} = req.body;
     try {
         const response = await client.query("update cater set name = $1 , location = $2, about = $3 where email=$4", [name, location, about, email]);
+        const complete = await client.query(
+            `UPDATE cater 
+             SET complete = 'true' 
+             WHERE email = $1 
+               AND name IS NOT NULL AND name <> '' 
+               AND location IS NOT NULL AND location <> '' 
+               AND about IS NOT NULL AND about <> '' 
+               AND price IS NOT NULL AND price > 0`, 
+            [email]
+          );
         return res.status(200).json({msg:"Success"});
     } catch (error) {
         console.log("Error from update cater details : ", error);
@@ -91,6 +102,18 @@ const addMenuRow = async (req,res)=>{
         const response = await client.query('SELECT name FROM cater where email=$1', [data[0]]);
         const caterName = response.rows[0].name;
         await client.query('INSERT INTO catermenu VALUES($1,$2,$3,$4,$5, $6, $7, $8)', [caterName, data[2], data[3], data[4], data[5], data[6], data[1], data[0]]);
+        const avg = await client.query("SELECT AVG(price) FROM catermenu WHERE email = $1", [data[0]]);
+        const updatePrice = await client.query("update cater set price = $1 where email = $2", [Math.round(avg.rows[0].avg) , data[0]]);
+        const complete = await client.query(
+            `UPDATE cater 
+             SET complete = 'true' 
+             WHERE email = $1 
+               AND name IS NOT NULL AND name <> '' 
+               AND location IS NOT NULL AND location <> '' 
+               AND about IS NOT NULL AND about <> '' 
+               AND price IS NOT NULL AND price > 0`, 
+            [email]
+          );
         return res.json({msg:"Success"});
     } catch (error) {
         console.log("Error in adding new row : ", error);
@@ -98,4 +121,22 @@ const addMenuRow = async (req,res)=>{
     }
 }
 
-module.exports = {Catersignin,CaterLogin, getSpecificCater, updateCaterDetails, addMenuRow};
+const getCaterOrders = async(req,res)=>{
+    const {caterEmail} = req.body;
+    console.log("Getting cater orders");
+    try {
+        const response = await client.query("select * from orders where cateremail = $1", [caterEmail])
+        const responseRows = response.rows;
+        responseRows.forEach((item)=>{
+            if (item.orderdate instanceof Date) {
+                item.orderdate = item.orderdate.toISOString().split("T")[0];
+            }
+        })
+        return res.json({msg:"Success", data:response.rows});
+    } catch (error) {
+        console.log("Error in getting cater orders", error);
+        return res.json({msg:"Error in getting carter orders"});
+    }
+}
+
+module.exports = {Catersignin,CaterLogin, getSpecificCater, updateCaterDetails, addMenuRow, getCaterOrders};

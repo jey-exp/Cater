@@ -92,7 +92,7 @@ const CaterDetails = () => {
             <div className='w-full jsutify-center'>
               <PropagateLoader color={"#1D3557"}/>
             </div>
-          </div>
+        </div>
       )}
       <div className='text-2xl font-bold text-custom-blue-123'>Name : 
         {caterName ? (

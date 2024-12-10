@@ -56,9 +56,7 @@ const CaterMenu = () => {
           const caterDetails = await axios.post("http://localhost:3000/api/v1/getspecificcater", data)
           if(caterDetails.data.msg==="Success"){
             const caterName = caterDetails.data.caterDetails.name;
-            console.log("Cater Name :", caterName);
             const res = await axios.get(`http://localhost:3000/api/v1/catermenu/${caterName}`)
-            console.log(res.data);
             if(res.data.msg==="Success in getting catering menu"){
               setBreakfast(res.data.data.filter((item)=> item.time==="Breakfast"));
               setLunch(res.data.data.filter((item)=> item.time==="Lunch"));
