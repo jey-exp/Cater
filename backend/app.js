@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const router = require("./Router/Router");
-const stripe = require("stripe")("your_stripe_secret_key");
 const bodyParser = require('body-parser');
 
 
