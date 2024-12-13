@@ -107,11 +107,11 @@ const DietPlan = () => {
         alert("Please select something");
       } else {
         var options = {
-          key: "rzp_test_IP8K3hDC0Rtlhv",
+          key: process.env.REACT_APP_RAZORPAY_KEY,
           key_secret: secret_key,
           amount: totalAmount * 100,
           currency: "INR",
-          name: "Healthy foods",
+          name: process.env.REACT_APP_BUSINESS_NAME,
           description: "Test mode",
           handler: function (response) {
             alert(response.razorpay_payment_id);
@@ -120,9 +120,9 @@ const DietPlan = () => {
             console.log("Payment success");
           },
           prefill: {
-            name: "Jey",
-            email: "jeyshreemen004@gmail.com",
-            contact: "9629783136",
+            name: process.env.REACT_APP_YOUR_NAME,
+            email: process.env.REACT_APP_EMAIL,
+            contact: process.env.REACT_APP_CONTACT,
           },
           notes: {
             address: "Razorpay Corporate office",
