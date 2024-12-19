@@ -28,8 +28,6 @@ const CaterLogin = async(req,res)=>{
     console.log("Cater login");
     
     const {gmail, pass} = req.body;
-    console.log("req : ", gmail, "-", pass);
-    
     try {
         const result = await client.query("SELECT * FROM cater WHERE email=$1", [gmail]);
         if(result.rowCount===0){
