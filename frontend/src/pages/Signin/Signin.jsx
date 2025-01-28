@@ -58,9 +58,11 @@ export const Signin = () => {
       if (response.data.msg === "Success") {
         navigate("/login");
         toast.success("Signed In :)", {id:toastId})
-      } else {
+      } else if(response.data.msg === "User already exists") {
+        toast.error("Email already exist!", {id:toastId});
+      }
+      else{
         toast.error("Unexpected error occured", {id:toastId});
-        console.log(response.data.msg);
       }
     } catch (err) {
       if(err.message==="Network Error"){
