@@ -1,16 +1,21 @@
 import React, { useContext, useEffect } from "react";
 import "./Login.css";
 import { useState } from "react";
-import { burger1, egg1, fries1, piza1 } from "../../assets";
+import { burger1, fries1, piza1 } from "../../assets";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../authContext";
+import { FaRegEye } from "react-icons/fa";
+import { PiEyeSlashLight } from "react-icons/pi";
+import toast, { ToastBar } from "react-hot-toast";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [email, setemail] = useState("");
   const [pass, setpass] = useState("");
-  const { login, logout, isAuthenticated, setgmail } = useAuth();
+  const { login, logout, setgmail } = useAuth();
+  const [showPass, setShowPass] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState(false);
   const handleemailChange = (e) => {
     setemail(e.target.value);
   };
@@ -24,8 +29,15 @@ export const Login = () => {
   };
 
   const handleSubmit = async (e) => {
+    const toastId = toast.loading("Loging in...");
+    setIsSubmiting(true);
     e.preventDefault();
-    console.log({ email, pass });
+
+    if(email==="" || pass ===""){
+      toast.error("Enter credentials", {id:toastId});
+      setIsSubmiting(false);
+      return;
+    }
 
     const data = {
       email: email,
@@ -43,14 +55,21 @@ export const Login = () => {
         console.log("Login success");
         login();
         setgmail(email);
+        toast.success("Login successfull", {id:toastId})
         navigate("/home");
+      }else if(response.data.msg==="Invalid credentials"){
+        toast.error("Check your credentials", {id:toastId})
       } else {
-        console.log(response.data.msg);
+        toast.error("Couldn't login!", {id:toastId} )
         logout();
       }
     } catch (err) {
-      console.error("Signin error:", err);
+      console.log(err);
+      toast.error("Couldn't login", {id:toastId})
       logout();
+    }
+    finally{
+      setIsSubmiting(false);
     }
   };
 
@@ -70,16 +89,29 @@ export const Login = () => {
             value={email}
             onChange={handleemailChange}
           />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none"
-            value={pass}
-            onChange={handlepassChange}
-          />
+          <div className="flex relative items-center">
+            <input
+              type={showPass ? "text" : "password"}
+              placeholder="password"
+              className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none pl-3 pr-10"
+              onChange={handlepassChange}
+            />
+            {showPass ? (
+              <FaRegEye
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 cursor-pointer"
+              />
+            ) : (
+              <PiEyeSlashLight
+                onClick={() => setShowPass(!showPass)}
+                className="absolute right-3 cursor-pointer"
+              />
+            )}
+          </div>
           <button
-            className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950"
+            className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950 disabled:bg-neutral-700"
             onClick={handleSubmit}
+            disabled={isSubmiting}
           >
             Login
           </button>

@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { burger1, egg1, fries1, piza1 } from "../../assets";
+import { burger1, egg1, piza1 } from "../../assets";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PiEyeSlashLight } from "react-icons/pi";
@@ -110,8 +110,7 @@ export const Signin = () => {
             <input
               type={showPass ? "text" : "password"}
               placeholder="password"
-              className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none pl-3 pr-10" // added padding right for space for the icon
-              value={pass}
+              className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none pl-3 pr-10"
               onChange={handlepassChange}
             />
             {showPass ? (

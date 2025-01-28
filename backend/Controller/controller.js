@@ -56,7 +56,7 @@ const login = async (req, res) => {
     );
 
     if (userResult.rowCount === 0) {
-      return res.status(500).json({ msg: "Invalid credentials" });
+      return res.json({ msg: "Invalid credentials" });
     }
 
     const user = userResult.rows[0];
