@@ -23,7 +23,7 @@ const CaterDetails = () => {
                   caterEmail
               }
               const response = await axios.post("http://localhost:3000/api/v1/getSpecificCater", data);
-              if(response.data.msg==="Success"){
+              if(response.data.msg==="success"){
                   if(response.data.caterDetails.name){
                     setCaterName(response.data.caterDetails.name);
                   }
@@ -65,7 +65,7 @@ const CaterDetails = () => {
           email : caterEmail
         }
         const response = await axios.post("http://localhost:3000/api/v1/caterapp/updatecater", data);
-        if(response.data.msg==="Success"){
+        if(response.data.msg==="success"){
           toast.success("Applied changes", {id:toastId});
           setRefresh(!refresh);
         }

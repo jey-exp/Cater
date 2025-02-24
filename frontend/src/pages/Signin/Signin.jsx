@@ -1,13 +1,18 @@
 import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { burger1, egg1, fries1, piza1 } from "../../assets";
+import { burger1, egg1, piza1 } from "../../assets";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { PiEyeSlashLight } from "react-icons/pi";
+import { FaRegEye } from "react-icons/fa";
 
 export const Signin = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setphone] = useState("");
   const [pass, setpass] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState(false);
   const navigate = useNavigate();
   const handleusernameChange = (e) => {
     setUsername(e.target.value);
@@ -28,8 +33,14 @@ export const Signin = () => {
     navigate("/login");
   };
   const handleSubmit = async (e) => {
+    setIsSubmiting(true);
+    const toastId = toast.loading("Signing In...");
     e.preventDefault();
-    console.log({ username, email, phone, pass });
+    if(username===''||email===''||phone===''||pass===''){
+      toast.error("Must fill all fields", {id:toastId});
+      setIsSubmiting(false);
+      return;
+    }
 
     const data = {
       name: username,
@@ -44,15 +55,26 @@ export const Signin = () => {
         "http://localhost:3000/api/v1/signin",
         data
       );
-      console.log(response.data.msg);
-      if (response.data.msg === "Success") {
-        console.log("Signin success");
+      if (response.data.msg === "success") {
         navigate("/login");
-      } else {
-        console.log(response.data.msg);
+        toast.success("Signed In :)", {id:toastId})
+      } else if(response.data.msg === "User already exists") {
+        toast.error("Email already exist!", {id:toastId});
+      }
+      else{
+        toast.error("Unexpected error occured", {id:toastId});
       }
     } catch (err) {
-      console.error("Signin error:", err);
+      if(err.response?.data){
+        toast.error(err.response.data.msg, {id:toastId});
+      }
+      else{
+        toast.error(err.message, {id:toastId});
+      }
+      console.error("Error while signing in:", err);
+    }
+    finally{
+      setIsSubmiting(false);
     }
   };
   return (
@@ -85,16 +107,29 @@ export const Signin = () => {
             value={phone}
             onChange={handlephoneChange}
           />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none"
-            value={pass}
-            onChange={handlepassChange}
-          />
+          <div className="relative flex items-center">
+            <input
+              type={showPass ? "text" : "password"}
+              placeholder="password"
+              className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none pl-3 pr-10"
+              onChange={handlepassChange}
+            />
+            {showPass ? (
+              <FaRegEye
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 cursor-pointer"
+              />
+            ) : (
+              <PiEyeSlashLight
+                onClick={() => setShowPass(!showPass)}
+                className="absolute right-3 cursor-pointer"
+              />
+            )}
+          </div>
           <button
-            className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950"
+            className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950 disabled:bg-neutral-700"
             onClick={handleSubmit}
+            disabled={isSubmiting}
           >
             Sign In
           </button>

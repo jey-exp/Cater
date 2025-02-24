@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../authContext";
+import toast from "react-hot-toast";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -65,6 +66,7 @@ const Cater = () => {
         setLunch(data.data.filter((item) => item.time === "Lunch"));
         setDinner(data.data.filter((item) => item.time === "Dinner"));
       } catch (error) {
+        toast.error(error.response.data.msg);
         console.error("Error fetching the catering menu data:", error);
       }
     };

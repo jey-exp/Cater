@@ -14,7 +14,7 @@ const register = async (req, res) => {
       [email]
     );
     if (emailAlreadyExists.rowCount != 0) {
-      return res.status(400).json({ msg: "User already exists" });
+      return res.json({ msg: "User already exists"});
     }
 
     const hashedPassword = await bcrypt.hash(pass, 10);
@@ -32,17 +32,18 @@ const register = async (req, res) => {
     });
 
     return res
-      .status(StatusCodes.CREATED)
-      .json({ user: tokenUser, token: token, msg: "Success" });
+      .status(200)
+      .json({ user: tokenUser, token: token, msg: "success" });
   } catch (err) {
     console.error("Error during user registration:", err);
     return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal server error" });
+      .status(500)
+      .json({ msg: "Something went wrong" });
   }
 };
 
 const login = async (req, res) => {
+  console.log("Logging in");
   const { email, pass } = req.body;
 
   if (!email || !pass) {
@@ -56,12 +57,14 @@ const login = async (req, res) => {
     );
 
     if (userResult.rowCount === 0) {
+      console.log("Invalid credentials");
       return res.status(500).json({ msg: "Invalid credentials" });
     }
 
     const user = userResult.rows[0];
     const isPasswordCorrect = await bcrypt.compare(pass, user.pass);
     if (!isPasswordCorrect) {
+      console.log("Invalid credentials");
       return res.status(500).json({ msg: "Invalid credentials" });
     }
 
@@ -72,12 +75,12 @@ const login = async (req, res) => {
 
     return res
       .status(StatusCodes.OK)
-      .json({ user: tokenUser, token: token, msg: "Success" });
+      .json({ user: tokenUser, token: token, msg: "success" });
   } catch (err) {
     console.log("Error during login:", err);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Internal server error" });
+      .json({ msg: "Something went wrong" });
   }
 };
 
@@ -103,11 +106,11 @@ const getCatermenu = async (req, res) => {
 
     res
       .status(200)
-      .json({ msg: "Success in getting catering menu", data: result.rows });
+      .json({ msg: "success", data: result.rows });
   } catch (err) {
     console.error("Error querying the database", err);
     res
-      .json({ msg: "An error occurred while retrieving the catering menu." });
+      .json({ msg: "Something went wrong" });
   }
 };
 
@@ -140,12 +143,15 @@ const getallCater = async (req, res) => {
   try {
     const response = await client.query("select * from cater where complete = 'true'");
     if (response.rowCount === 0) {
-      res.status(400).json({ msg: "No catering found !" });
-      console.log("No cater found");
+      res.status(400).json({ msg: "No caters found!" });
+      console.log("No caters found");
     }
-    res.status(200).json({ data: response.rows });
+    else{
+      return res.status(200).json({msg:"success", data: response.rows });
+    }
   } catch (error) {
     console.log("Error in getting cater details", error);
+    return res.status(500).json({msg:"Something went wrong"})
   }
 };
 
@@ -154,12 +160,12 @@ const addOrderToProfile = async (req, res) => {
     const { gmail, catername, totalAmount, caterEmail } = req.body;
     console.log("adding order to profile");
     await client.query("INSERT INTO orders(cateremail, customeremail, price, catername) values($1,$2,$3,$4)", [caterEmail, gmail, totalAmount, catername]);
-    return res.status(200).json({ msg: "Success" });
+    return res.status(200).json({ msg: "success" });
   } catch (error) {
     console.error("Error in adding order to profile:", error);
     return res
       .status(500)
-      .json({ msg: "Error in adding order to profile", error: error.message });
+      .json({ msg: "Something went wrong"});
   }
 };
 
@@ -170,8 +176,9 @@ const getOrderDetails = async (req, res) => {
     // newGmail += "user";
     // const tableName = `ordertable_${newGmail}`;
     const response = await client.query(`select * from orders where customeremail = $1`, [gmail]);
-    res.status(200).json({ data: response.rows });
+    res.status(200).json({msg: "sucess",data: response.rows });
   } catch (error) {
+    res.status(500).json({msg:"Something went wrong"});
     console.log("Error in getting order details :", error);
   }
 };

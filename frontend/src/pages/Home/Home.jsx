@@ -18,6 +18,7 @@ const Home = () => {
 
 
   useEffect(() => {
+    // console.log("sponob");
     if (!isAuthenticated) {
       navigate("/notauthenticated");
     } else {
@@ -27,14 +28,20 @@ const Home = () => {
             "http://localhost:3000/api/v1/getallcater"
           );
           const data = response.data;
-          setLoading(false);
           setcater(data.data);
         } catch (err) {
-          toast.error("Error, Please try again later.")
+          if(err.response?.data){
+            toast.error(err.response.data.msg)
+          }
+          else{
+            toast.error("Unexpected error occured");
+          }
           console.log("Error in fetching cater details", err);
-          setTimeout(() => {
-            setLoading(false);
-          }, 2000);
+        }
+        finally{
+          setLoading(false);
+         
+          
         }
       };
       fetchCater();
@@ -52,17 +59,19 @@ const Home = () => {
         </div>
       )}
       <Navbar />
-      <div className="flex flex-col justify-center items-center gap-5">
-        <h3 className=" text-3xl">Available Catering:</h3>
-        <div className="flex justify-start w-screen px-5">
           <button
-            className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4  rounded drop-shadow-lg hover:bg-indigo-950"
+            className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4  rounded drop-shadow-lg hover:bg-indigo-950 m-5"
             onClick={handleback}
           >
             <IoChevronBackOutline />
             Back
           </button>
-        </div>
+      <div className="flex flex-col justify-center items-center gap-5">
+        {cater.length===0 ? (
+          <div className="text-red-500 opacity-60 font-medium text-xl ">
+            No cater found!
+          </div>
+        ) : (
         <div className="flex flex-wrap gap-8 justify-center">
           {cater.map((item, index) => (
             <CateringCard
@@ -74,6 +83,7 @@ const Home = () => {
             />
           ))}
         </div>
+        )}
       </div>
     </div>
   );
