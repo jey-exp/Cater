@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { PiEyeSlashLight } from "react-icons/pi";
+import { FaRegEye } from "react-icons/fa";
 
 const CaterSignin = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
   
@@ -40,7 +43,7 @@ const CaterSignin = () => {
           pass :pass
         }
         const response =await axios.post("http://localhost:3000/api/v1/caterapp/signin", data);
-        if (response.data.msg==="Success"){
+        if (response.data.msg==="success"){
           toast.success("Signed In", {id:toastId});
           navigate("/caterapp/login");
         }
@@ -49,11 +52,11 @@ const CaterSignin = () => {
             toast.error("User already exist", {id:toastId});
           }
           else{
-            toast.error("Something went wrong!")
+            toast.error("Unexpected error occured")
           }
         }
       } catch (error) {
-        toast.error("Couldn't signin", {id:toastId});
+        toast.error(error.response.data.msg, {id:toastId});
         console.log("Error in signing in cater:", error);
         
       }
@@ -61,48 +64,60 @@ const CaterSignin = () => {
   }
 
   return (
-    <div className='w-screen min-h-screen p-5 bg-gray-300 flex flex-col justify-center items-center'>
+    <div className="w-screen min-h-screen p-5 bg-gray-300 flex flex-col justify-center items-center">
       <div className="flex flex-col gap-5 items-center justify-center bg-white p-5 rounded-lg">
-          <div className='text-2xl font-bold text-custom-blue-123'>
-            Cater SignIn
-          </div>
+        <div className="text-2xl font-bold text-custom-blue-123">
+          Cater SignIn
+        </div>
+        <input
+          type="text"
+          placeholder="Enter your name"
+          className="w-96 rounded-md p-2.5 bg-neutral-100 drop-shadow-md outline-none"
+          value={username}
+          onChange={handleusernameChange}
+        />
+        <input
+          type="text"
+          placeholder="Enter your Email"
+          className="w-96 rounded-md p-2.5 bg-neutral-100 drop-shadow-md outline-none"
+          value={email}
+          onChange={handleemailChange}
+        />
+        <div className="relative flex items-center">
           <input
-            type="text"
-            placeholder="Enter your name"
-            className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none"
-            value={username}
-            onChange={handleusernameChange}
-          />
-          <input
-            type="text"
-            placeholder="Enter your Email"
-            className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none"
-            value={email}
-            onChange={handleemailChange}
-          />
-          <input
-            type="password"
+            type={showPass ? "text" : "password"}
             placeholder="Password"
-            className="w-96 rounded-md p-2.5 bg drop-shadow-md outline-none"
+            className="w-96 rounded-md p-2.5 bg-neutral-100 drop-shadow-md outline-none"
             value={pass}
             onChange={handlepassChange}
           />
-          <button
-            className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950"
-            onClick={handleSubmit}
-          >
-            Sign In
-          </button>
-          <p
-            className="text-custom-blue-123 cursor-pointer hover:text-indigo-950"
-            onClick={handlechangetologin}
-          >
-            Already a user? Try Login
-          </p>
+          {showPass ? (
+            <FaRegEye
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 cursor-pointer"
+            />
+          ) : (
+            <PiEyeSlashLight
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 cursor-pointer"
+            />
+          )}
         </div>
+        <button
+          className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950"
+          onClick={handleSubmit}
+        >
+          Sign In
+        </button>
+        <p
+          className="text-custom-blue-123 cursor-pointer hover:text-indigo-950"
+          onClick={handlechangetologin}
+        >
+          Already a user? Try Login
+        </p>
       </div>
-
-  )
+    </div>
+  );
 }
 
 export default CaterSignin

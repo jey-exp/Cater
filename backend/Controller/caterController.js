@@ -17,16 +17,15 @@ const Catersignin= async(req,res)=>{
         const hashedPassword = await bcrypt.hash(pass,10);
         const result = await client.query("INSERT INTO cater(name,email,pass) VALUES($1,$2,$3)",[name,gmail,hashedPassword]);
 
-        return res.status(200).json({msg:"Success"});
+        return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error during cater sigin:", error);
-        return res.json({msg:"Internal server error"});
+        return res.json({msg:"Something went wrong"});
     }
 }
 
 const CaterLogin = async(req,res)=>{
     console.log("Cater login");
-    
     const {gmail, pass} = req.body;
     try {
         const result = await client.query("SELECT * FROM cater WHERE email=$1", [gmail]);
@@ -37,15 +36,15 @@ const CaterLogin = async(req,res)=>{
             const user = result.rows[0];
             const isPasswordCorrect = bcrypt.compare(pass, user.pass);
             if(isPasswordCorrect){
-                res.status(200).json({msg:"Success"});
+                res.status(200).json({msg:"success"});
             }
             else{
-                res.json({msg:"Check credentials"});
+                res.json({msg:"Imvalid credentials"});
             }
         }
     } catch (error) {
         console.log("Error during cater login",error);
-        res.json({msg:"Internal server error"});
+        res.json({msg:"Something went wrong"});
     }
 }
 
@@ -60,10 +59,10 @@ const getSpecificCater = async(req,res)=>{
     try {
         const response = await client.query("SELECT * FROM cater WHERE email=$1", [caterEmail]);        
         const caterDetails = response.rows[0];
-        return res.status(200).json({msg:"Success", caterDetails: caterDetails,});
+        return res.status(200).json({msg:"success", caterDetails: caterDetails,});
     } catch (error) {
         console.log("Error in get specific cater : ", error);
-        return res.json({msg:"Couldn't retrieve data"});
+        return res.json({msg:"Something went wrong"});
     }
 }
 
@@ -82,10 +81,10 @@ const updateCaterDetails = async (req,res)=>{
                AND price IS NOT NULL AND price > 0`, 
             [email]
           );
-        return res.status(200).json({msg:"Success"});
+        return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error from update cater details : ", error);
-        return res.status(200).json({msg:"Error while updating!"});
+        return res.status(200).json({msg:"Something went wrong"});
     }
 }
 
@@ -93,6 +92,8 @@ const updateCaterDetails = async (req,res)=>{
 const addMenuRow = async (req,res)=>{
     console.log("Adding menu row");
     const data = req.body;
+    console.log(data);
+    
     if(!data) {
         return res.json({msg:"No data is sent"});
     }
@@ -110,18 +111,19 @@ const addMenuRow = async (req,res)=>{
                AND location IS NOT NULL AND location <> '' 
                AND about IS NOT NULL AND about <> '' 
                AND price IS NOT NULL AND price > 0`, 
-            [email]
+            [data[0]]
           );
-        return res.json({msg:"Success"});
+          console.log("Added menu item");
+        return res.json({msg:"success"});
     } catch (error) {
         console.log("Error in adding new row : ", error);
-        return res.json({msg:"Error in adding new row ", error});
+        return res.json({msg:"Something went wrong "});
     }
 }
 
 const getCaterOrders = async(req,res)=>{
-    const {caterEmail} = req.body;
     console.log("Getting cater orders");
+    const {caterEmail} = req.body;
     try {
         const response = await client.query("select * from orders where cateremail = $1", [caterEmail])
         const responseRows = response.rows;
@@ -130,10 +132,10 @@ const getCaterOrders = async(req,res)=>{
                 item.orderdate = item.orderdate.toISOString().split("T")[0];
             }
         })
-        return res.json({msg:"Success", data:response.rows});
+        return res.json({msg:"success", data:response.rows});
     } catch (error) {
         console.log("Error in getting cater orders", error);
-        return res.json({msg:"Error in getting carter orders"});
+        return res.json({msg:"Something went wrong"});
     }
 }
 

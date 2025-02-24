@@ -55,7 +55,7 @@ export const Signin = () => {
         "http://localhost:3000/api/v1/signin",
         data
       );
-      if (response.data.msg === "Success") {
+      if (response.data.msg === "success") {
         navigate("/login");
         toast.success("Signed In :)", {id:toastId})
       } else if(response.data.msg === "User already exists") {
@@ -65,12 +65,13 @@ export const Signin = () => {
         toast.error("Unexpected error occured", {id:toastId});
       }
     } catch (err) {
-      if(err.message==="Network Error"){
-        toast.error("Network down!", {id:toastId})
-        return;
+      if(err.response?.data){
+        toast.error(err.response.data.msg, {id:toastId});
       }
-      toast.error("Couldn't signin", {id:toastId});
-      console.error("Signin error:", err);
+      else{
+        toast.error(err.message, {id:toastId});
+      }
+      console.error("Error while signing in:", err);
     }
     finally{
       setIsSubmiting(false);

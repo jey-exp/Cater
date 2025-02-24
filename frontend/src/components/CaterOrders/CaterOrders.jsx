@@ -21,11 +21,11 @@ const CaterOrders = () => {
   useEffect(()=>{
     const gettingCaterOrders = async ()=>{
      try {
-        const res = await axios.post("http://localhost:3000/api/v1/caterapp/getcaterorders", {caterEmail : caterEmail});
-        setOrders(res.data.data);
+        const response = await axios.post("http://localhost:3000/api/v1/caterapp/getcaterorders", {caterEmail : caterEmail});
+        setOrders(response.data.data);
         setLoading(false);
      } catch (error) {
-      console.log("Error in getting cater orders", error);
+      console.log(error.response.data.msg, error);
       setLoading(false);
      }
     }

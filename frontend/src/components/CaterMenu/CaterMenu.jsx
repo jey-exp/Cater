@@ -54,10 +54,10 @@ const CaterMenu = () => {
           caterEmail : caterEmail
         }
           const caterDetails = await axios.post("http://localhost:3000/api/v1/getspecificcater", data)
-          if(caterDetails.data.msg==="Success"){
+          if(caterDetails.data.msg==="success"){
             const caterName = caterDetails.data.caterDetails.name;
             const res = await axios.get(`http://localhost:3000/api/v1/catermenu/${caterName}`)
-            if(res.data.msg==="Success in getting catering menu"){
+            if(res.data.msg==="success"){
               setBreakfast(res.data.data.filter((item)=> item.time==="Breakfast"));
               setLunch(res.data.data.filter((item)=> item.time==="Lunch"));
               setDinner(res.data.data.filter((item)=> item.time==="Dinner"));
@@ -68,7 +68,7 @@ const CaterMenu = () => {
       gettingMenu();
     } catch (error) {
       console.log("Error when fetching cater menu", error);
-      toast.error("Error getting your menu");
+      toast.error(error.response.data.msg);
       setLoading(false);
     }
 },[refreshMenu])
@@ -77,7 +77,7 @@ const CaterMenu = () => {
     const toastId = toast.loading("Adding new menu item...");
     try {
       const response = await axios.post("http://localhost:3000/api/v1/caterapp/addmenurow",data);
-      if(response.data.msg==="Success"){
+      if(response.data.msg==="success"){
         toast.success(`Added new row in ${data[1]}`, {id:toastId});
       }
       if(response.data.msg==="No data is sent"){
@@ -88,9 +88,14 @@ const CaterMenu = () => {
       setRefreshMenu(!refreshMenu);
     } catch (error) {
       console.log("Error in adding new row : ", error);
-      toast.error("Error adding new row", {id:toastId});
+      toast.error(error.response.data.msg, {id:toastId});
       setMenuModal(false);
       setRefreshMenu(!refreshMenu);
+    }
+    finally{
+      setTimeout(() => {
+        toast.error("Unexpected error occured", {id:toastId})
+      }, 5000);
     }
   }
 

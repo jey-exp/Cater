@@ -32,7 +32,7 @@ export const Login = () => {
     const toastId = toast.loading("Loging in...");
     setIsSubmiting(true);
     e.preventDefault();
-
+    
     if(email==="" || pass ===""){
       toast.error("Enter credentials", {id:toastId});
       setIsSubmiting(false);
@@ -45,13 +45,11 @@ export const Login = () => {
     };
 
     try {
-      console.log("Working on login");
       const response = await axios.post(
         "http://localhost:3000/api/v1/login",
         data
       );
-      console.log(response.data.msg);
-      if (response.data.msg === "Success") {
+      if (response.data.msg === "success") {
         console.log("Login success");
         login();
         setgmail(email);
@@ -64,8 +62,12 @@ export const Login = () => {
         logout();
       }
     } catch (err) {
-      console.log(err);
-      toast.error("Couldn't login", {id:toastId})
+      if(err.response?.data){
+        toast.error(err.response.data.msg, {id:toastId})
+      }
+      else{
+        toast.error(err.message, {id:toastId});
+      }
       logout();
     }
     finally{

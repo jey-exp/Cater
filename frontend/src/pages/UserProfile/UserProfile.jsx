@@ -85,9 +85,12 @@ const UserProfile = () => {
           <h3 className="text-3xl font-medium">Your Profile</h3>
           <div></div>
         </div>
-        <div className="w-11/12 h-3/6 overflow-y-auto flex flex-col gap-5 mb-8 bg-white p-10 rounded-lg drop-shadow-lg">
-          <h3 className="font-semibold">Order Details:</h3>
-          <div className="w-full">
+        <div className="w-11/12 max-h-3/6 overflow-y-auto flex flex-col gap-5 mb-8 bg-white p-10 rounded-lg drop-shadow-lg">
+          {orderDetails.length===0 ? (
+            <div className="text-center text-red-600 font-semibold italic text-xl opacity-65">No order history!</div>
+          ) : (
+            <div className="w-full">
+            <h3 className="font-semibold">Order Details:</h3>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
@@ -115,6 +118,7 @@ const UserProfile = () => {
               </Table>
             </TableContainer>
           </div>
+          )}
         </div>
       </div>
     </div>
