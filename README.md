@@ -54,7 +54,7 @@ This is a simple project developed for practicing React Js, combining both front
 - If an error occurs, most likely due to incorrect credentials in .env
 - Double-check your database connection details
 
-*go to http://localhost:3000/api/v1/getallcaters*
+*go to http://localhost:3000/api/v1/getallcater*
 (To verfiy that backend is working fine)
 
 ### Frontend Setup
