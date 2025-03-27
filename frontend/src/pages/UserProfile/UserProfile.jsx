@@ -73,7 +73,7 @@ const UserProfile = () => {
   return (
     <div className="h-full bg-blue-50">
       <Navbar />
-      <div className="flex flex-col h-screen  items-center mx-5 w-screen gap-5">
+      <div className="flex flex-col h-screen  items-center mx-5 max-w-screen gap-5">
         <div className="flex justify-between items-center w-full mt-4">
           <button
             className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4 rounded drop-shadow-lg"
