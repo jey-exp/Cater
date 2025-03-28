@@ -74,7 +74,7 @@ function App() {
           <Route path="/caterapp/home" element={<CaterHome/>} />
         </Routes>
       </Router>
-      <Toaster/>
+      <Toaster />
     </AuthProvider>
   );
 }
