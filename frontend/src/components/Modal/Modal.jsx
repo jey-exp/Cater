@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 const Modal = ({ isOpen, onClose, name, about, location, onUpdate }) => {
   const [caterName, setCaterName] = useState(name);
@@ -19,7 +20,9 @@ const Modal = ({ isOpen, onClose, name, about, location, onUpdate }) => {
     if(e.target.value===""){
         return setCaterName(null);
     }
-    setCaterName(e.target.value);
+    // setCaterName(e.target.value);
+      toast.dismiss();
+      toast.error("Name can't be changed now");
   };
 
   const handleLocation = (e) => {
@@ -35,6 +38,16 @@ const Modal = ({ isOpen, onClose, name, about, location, onUpdate }) => {
     }
     setCaterAbout(e.target.value);
   };
+
+  const handleSubmit = ()=>{
+    if(caterName === null || caterLocation === null || caterAbout === null){
+      toast.error("Fill all details!");
+      return;    
+    }
+    else{
+      return onUpdate(caterName, caterAbout, caterLocation);
+    }
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 w-full">
@@ -82,7 +95,7 @@ const Modal = ({ isOpen, onClose, name, about, location, onUpdate }) => {
             </button>
             <button
               className="bg-custom-blue-123 text-white py-1 px-2 rounded"
-              onClick={() => onUpdate(caterName, caterAbout, caterLocation)}
+              onClick={() => handleSubmit()}
             >
               Save
             </button>
