@@ -92,11 +92,6 @@ const CaterMenu = () => {
       setMenuModal(false);
       setRefreshMenu(!refreshMenu);
     }
-    finally{
-      setTimeout(() => {
-        toast.error("Unexpected error occured", {id:toastId})
-      }, 5000);
-    }
   }
 
   const handleOpenMenuModal = (time)=>{
