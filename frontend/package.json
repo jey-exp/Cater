@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.1",
+    "crypto-js": "^4.2.0",
     "express": "^4.19.2",
     "http-status-codes": "^2.3.0",
     "json": "^11.0.0",
