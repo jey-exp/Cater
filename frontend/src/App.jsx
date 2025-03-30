@@ -61,7 +61,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route
             path="/cater/:catername"
-            element={<Cater breakfast={breakfast} />}
+            element={<Cater />}
           />
           <Route
             path="/dietplan/:catername"
