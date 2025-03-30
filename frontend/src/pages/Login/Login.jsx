@@ -8,6 +8,8 @@ import { useAuth } from "../../authContext";
 import { FaRegEye } from "react-icons/fa";
 import { PiEyeSlashLight } from "react-icons/pi";
 import toast, { ToastBar } from "react-hot-toast";
+import useSupaBase from "../../contextProvider";
+import { hash, decode } from "../../helpers/helper";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ export const Login = () => {
   const { login, logout, setgmail } = useAuth();
   const [showPass, setShowPass] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
+  const supa = useSupaBase((state) => state.supaObj);
   const handleemailChange = (e) => {
     setemail(e.target.value);
   };
@@ -46,7 +49,7 @@ export const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/login",
+        `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/login`,
         data
       );
       if (response.data.msg === "success") {
@@ -74,6 +77,36 @@ export const Login = () => {
       setIsSubmiting(false);
     }
   };
+
+  const handleSupaBaseLogin = async (e)=>{
+    const toastId = toast.loading("Loging in...");
+    setIsSubmiting(true);
+    e.preventDefault();
+    
+    if(email==="" || pass ===""){
+      toast.error("Enter credentials", {id:toastId});
+      setIsSubmiting(false);
+      return;
+    }
+
+    const { data, error } = await supa.auth.signInWithPassword({
+      email: email,
+      password: pass,
+    })
+    if(error){
+      console.log(error);
+      toast.error("Unexpected error" , {id:toastId});
+    }
+    else{
+      console.log(data);
+      const userEmail = data.user;
+      const hashedEmail = hash(userEmail);
+      const verify = decode(hashedEmail);
+      localStorage.setItem("user", userEmail);
+      toast.success("Logged In",  {id: toastId});
+    }
+    setIsSubmiting(false);
+  }
 
   return (
     <div className="h-screen w-screen bg-gray-300 flex flex-col justify-center items-center ">
@@ -112,7 +145,7 @@ export const Login = () => {
           </div>
           <button
             className="bg-custom-blue-123 text-white p-2 rounded-md pl-4 pr-4 drop-shadow-md hover:bg-indigo-950 disabled:bg-neutral-700"
-            onClick={handleSubmit}
+            onClick={handleSupaBaseLogin}
             disabled={isSubmiting}
           >
             Login

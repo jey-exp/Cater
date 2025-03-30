@@ -92,6 +92,7 @@ const CaterMenu = () => {
       setMenuModal(false);
       setRefreshMenu(!refreshMenu);
     }
+
   }
 
   const handleOpenMenuModal = (time)=>{

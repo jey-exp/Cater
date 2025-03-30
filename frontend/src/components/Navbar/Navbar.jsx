@@ -4,12 +4,15 @@ import { logo, profileimg } from "../../assets";
 import { useNavigate } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
 import { useAuth } from "../../authContext";
+import useSupaBase from "../../contextProvider";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const handleLogout = () => {
-    logout();
+  const supa = useSupaBase((state)=> state.supaObj);
+
+  const handleLogout = async () => {
+    const {error} = await supa.auth.signOut();
     navigate("/login");
   };
 
