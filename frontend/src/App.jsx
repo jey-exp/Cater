@@ -65,7 +65,7 @@ function App() {
           />
           <Route
             path="/dietplan/:catername"
-            element={<DietPlan breakfast={breakfast} />}
+            element={<DietPlan />}
           />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/notauthenticated" element={<LogintoContinue />} />
