@@ -61,11 +61,11 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route
             path="/cater/:catername"
-            element={<Cater breakfast={breakfast} />}
+            element={<Cater />}
           />
           <Route
             path="/dietplan/:catername"
-            element={<DietPlan breakfast={breakfast} />}
+            element={<DietPlan />}
           />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/notauthenticated" element={<LogintoContinue />} />
