@@ -57,7 +57,7 @@ const Cater = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/catermenu/${catername}`
+          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${catername}`
         );
         const data = response.data;
         console.log(data);

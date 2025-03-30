@@ -58,7 +58,7 @@ const DietPlan = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/catermenu/${catername}`
+          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${catername}`
         );
         const data = response.data;
         setBreakfast(data.data.filter((item) => item.time === "Breakfast"));
@@ -91,7 +91,7 @@ const DietPlan = () => {
     try {
       const data = { gmail, catername, totalAmount, caterEmail };
       const response = await axios.post(
-        "http://localhost:3000/api/v1/addodertoprofile",
+        `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/addodertoprofile`,
         data
       );
     } catch (error) {

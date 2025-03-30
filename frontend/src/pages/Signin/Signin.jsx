@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { PiEyeSlashLight } from "react-icons/pi";
 import { FaRegEye } from "react-icons/fa";
+import useSupaBase from "../../contextProvider";
 
 export const Signin = () => {
   const [username, setUsername] = useState("");
@@ -52,7 +53,7 @@ export const Signin = () => {
     try {
       console.log("Working on signin");
       const response = await axios.post(
-        "http://localhost:3000/api/v1/signin",
+        `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/signin`,
         data
       );
       if (response.data.msg === "success") {

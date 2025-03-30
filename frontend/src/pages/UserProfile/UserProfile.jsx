@@ -52,7 +52,7 @@ const UserProfile = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:3000/api/v1/getorderdetails`,
+          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/getorderdetails`,
           { gmail: gmail }
         );
         const data = response.data;

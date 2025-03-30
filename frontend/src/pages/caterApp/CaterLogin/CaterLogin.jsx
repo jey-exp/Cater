@@ -37,7 +37,7 @@ const CaterLogin = () => {
                 gmail: email,
                 pass : pass
             }
-            const response = await axios.post("http://localhost:3000/api/v1/caterapp/login", data);
+            const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/login`, data);
             if(response.data.msg==="success"){
                 toast.success("Logged In", {id:toastId});
                 caterLogin();
