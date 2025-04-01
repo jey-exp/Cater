@@ -13,7 +13,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     const {error} = await supa.auth.signOut();
-    navigate("/login");
+    localStorage.removeItem("user");
   };
 
   const handleprofileclick = () => {

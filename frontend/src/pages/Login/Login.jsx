@@ -10,6 +10,7 @@ import { PiEyeSlashLight } from "react-icons/pi";
 import toast, { ToastBar } from "react-hot-toast";
 import useSupaBase from "../../contextProvider";
 import { hash, decode } from "../../helpers/helper";
+import { GridLoader } from "react-spinners";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -19,6 +20,28 @@ export const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const supa = useSupaBase((state) => state.supaObj);
+  const [showUi, setShowUi] = useState(false);
+
+  useEffect(()=>{
+    try {
+      const checkSession = async()=>{
+        const { data: { user } } = await supa.auth.getUser()
+        if(user){
+          setTimeout(() => {
+            navigate("/home");
+          }, 1000);
+          return;
+        }
+        setTimeout(() => {
+          setShowUi(true);
+        }, 1000);
+      }
+      checkSession();
+    } catch (error) {
+      console.log("Error in checking session : ", error);
+    }
+  },[])
+
   const handleemailChange = (e) => {
     setemail(e.target.value);
   };
@@ -94,22 +117,29 @@ export const Login = () => {
       password: pass,
     })
     if(error){
-      console.log(error);
-      toast.error("Unexpected error" , {id:toastId});
+      console.log(error.message);
+      toast.error(error.message , {id:toastId});
     }
     else{
-      console.log(data);
-      const userEmail = data.user;
-      const hashedEmail = hash(userEmail);
+      const userEmail = data.user.email;
+      const hashedEmail = (await hash(userEmail)).toString();
       const verify = decode(hashedEmail);
-      localStorage.setItem("user", userEmail);
+      localStorage.setItem("user", hashedEmail);
       toast.success("Logged In",  {id: toastId});
     }
     setIsSubmiting(false);
   }
 
   return (
-    <div className="h-screen w-screen bg-gray-300 flex flex-col justify-center items-center ">
+    showUi === false ? (
+      <div className="bg-gray-300 w-screen h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-5">
+          <GridLoader color={"#1D3557"} />
+          <h1 className="text-2xl text-custom-blue-123 font-semibold">Verifing your request</h1>
+        </div>
+      </div>
+    ) : (
+    <div className="h-screen w-screen bg-gray-300 flex flex-col justify-center items-center">
       <div className=" flex flex-col justify-center items-center w-20rem bg-white backdrop-blur-lg bg-opacity-25 h-40rem p-8 rounded-lg shadow-xl gap-6 z-10 relative">
         <div className="mt-4">
           <h3 className="text-3xl p-1 mb-2 text-custom-blue-123 font-semibold">
@@ -158,8 +188,7 @@ export const Login = () => {
           </p>
         </div>
         <div
-          className="text-custom-gray-123 mb-3 mt-4
-    "
+          className="text-custom-gray-123 mb-3 mt-4"
         >
           <p>Unlock Flavorful Delights with Every Login</p>
         </div>
@@ -174,5 +203,6 @@ export const Login = () => {
         <img src={fries1} className="w-44 h-44" />
       </div>
     </div>
+    )
   );
 };

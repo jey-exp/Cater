@@ -11,6 +11,5 @@ export const decode = async (hash) => {
     const bytes = CryptoJS.AES.decrypt(hash, secretKey);
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
     const decoded = JSON.parse(decrypted);
-    console.log(decoded);
     return decoded;
 };
