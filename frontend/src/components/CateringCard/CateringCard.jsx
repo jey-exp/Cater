@@ -14,7 +14,7 @@ const CateringCard = ({ name, location, about, price }) => {
     }
   }, [ab]);
 
-  const hamndleCater = () => {
+  const handleNextClick = () => {
     navigate(`/cater/${name}`);
   };
   return (
@@ -25,14 +25,14 @@ const CateringCard = ({ name, location, about, price }) => {
           <MdLocationOn size={30} color="#1D3557" />
           <h4 className="text-xl">{location}</h4>
         </div>
-        <p>{ab}</p>
+        <h1>{ab}</h1>
         <div className="flex between item-center justify-between">
           <p>
             Avg Price: ₹<span>{price}</span>
           </p>
           <button
             className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-4 pr-2  rounded drop-shadow-lg hover:bg-indigo-950"
-            onClick={hamndleCater}
+            onClick={handleNextClick}
           >
             Next <GrFormNext />
           </button>
