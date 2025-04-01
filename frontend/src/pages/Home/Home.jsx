@@ -46,7 +46,7 @@ const Home = () => {
         </div>
       )}
       <Navbar />
-      <div className="flex flex-col justify-center items-center gap-5">
+      <div className="flex flex-col justify-center items-center gap-5 mt-7">
         {cater.length === 0 ? (
           <div className="text-red-500 opacity-60 font-medium text-xl ">
             No cater found!
