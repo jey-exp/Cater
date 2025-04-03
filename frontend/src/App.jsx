@@ -14,8 +14,6 @@ import CaterLogin from "./pages/caterApp/CaterLogin/CaterLogin";
 import {Toaster} from "react-hot-toast";
 import CaterHome from "./pages/caterApp/CaterHome/CaterHome";
 import { createClient } from '@supabase/supabase-js'
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { useEffect, useState } from "react";
 import useSupaBase from "./contextProvider";
 
@@ -49,13 +47,10 @@ function App() {
     if (!session) {
       return (
         <div>
-          <AuthProvider>
             <Router>
               <Login />
               <Toaster/>
             </Router>
-          </AuthProvider>
-          {/* <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} /> */}
         </div>
       );
     }
@@ -64,7 +59,6 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="" element={<Signin />} />
             <Route path="/login" element={<Login />} />
             <Route path="/home" element={<Home />} />
             <Route

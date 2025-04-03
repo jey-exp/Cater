@@ -12,7 +12,6 @@ const CaterSignin = () => {
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
-  
   const handleusernameChange=(e)=>{
     setUsername(e.target.value);
   }

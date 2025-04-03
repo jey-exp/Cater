@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../authContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Modal from '../Modal/Modal';
 import { PropagateLoader } from 'react-spinners';
+import { decode } from '../../utilities/helper';
 
 const CaterDetails = () => {
-  const {caterEmail} = useAuth();
   const [caterName, setCaterName] = useState(null);
   const [location, setLocation] = useState(null);
   const [about, setAbout] = useState(null);
@@ -19,6 +18,8 @@ const CaterDetails = () => {
   useEffect(()=>{
       try {
           const getAllcater = async ()=>{
+            const hahsedCaterEmail = JSON.parse(localStorage.getItem("caterEmail") || "");
+            const caterEmail = await decode(hahsedCaterEmail);
               const data={
                   caterEmail
               }

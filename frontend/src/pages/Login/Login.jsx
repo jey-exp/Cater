@@ -7,7 +7,7 @@ import { FaRegEye } from "react-icons/fa";
 import { PiEyeSlashLight } from "react-icons/pi";
 import toast from "react-hot-toast";
 import useSupaBase from "../../contextProvider";
-import { hash } from "../../helpers/helper";
+import { hash } from "../../utilities/helper";
 import { GridLoader } from "react-spinners";
 
 export const Login = () => {

@@ -12,6 +12,7 @@ import { useAuth } from '../../authContext';
 import { PropagateLoader } from 'react-spinners';
 import MenuModal from '../MenuModal/MenuModal';
 import toast from 'react-hot-toast';
+import { decode } from '../../utilities/helper';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -41,7 +42,6 @@ const CaterMenu = () => {
   const [breakfast, setBreakfast] = useState([]);
   const [lunch, setLunch] = useState([]);
   const [dinner, setDinner] = useState([]);
-  const {caterEmail} = useAuth();
   const [menuModalOpen, setMenuModal] = useState(false);
   const [modalTime, setModalTime] = useState("Breakfast");
   const [isLoading, setLoading] = useState(true);
@@ -50,6 +50,8 @@ const CaterMenu = () => {
   useEffect(()=>{
     try {
       const gettingMenu = async ()=>{
+        const hahsedCaterEmail = JSON.parse(localStorage.getItem("caterEmail") || "");
+        const caterEmail = await decode(hahsedCaterEmail);
         const data ={
           caterEmail : caterEmail
         }

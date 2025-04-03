@@ -12,7 +12,7 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import secret_key from "../.config";
 import { useAuth } from "../../authContext";
-import { decode } from "../../helpers/helper";
+import { decode } from "../../utilities/helper";
 import toast from "react-hot-toast";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../authContext';
 import { PiEyeSlashLight } from "react-icons/pi";
 import { FaRegEye } from "react-icons/fa";
+import { hash } from '../../../utilities/helper';
 
 const CaterLogin = () => {
     const [email, setEmail] = useState("");
@@ -39,13 +40,13 @@ const CaterLogin = () => {
             }
             const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/login`, data);
             if(response.data.msg==="success"){
+              const hashedEmail = await hash(email);
+              localStorage.setItem("caterAuth", JSON.stringify(true));
+              localStorage.setItem("caterEmail", JSON.stringify(hashedEmail));
                 toast.success("Logged In", {id:toastId});
-                caterLogin();
-                logout();
-                setCaterEmail(email);
                 navigate("/caterapp/home");
             }
-            else if(response.data.msg==="User not found" || response.data.msg==="Check credentials" || response.data.msg==="Internal server error"){
+            else if(response.data.msg==="User not found" || response.data.msg==="Invalid credentials" || response.data.msg==="Internal server error"){
                 toast.error(response.data.msg, {id:toastId});
             }
         } catch (error) {

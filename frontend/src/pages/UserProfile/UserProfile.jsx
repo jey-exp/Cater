@@ -11,7 +11,7 @@ import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { decode } from "../../helpers/helper";
+import { decode } from "../../utilities/helper";
 import { IoChevronBackOutline } from "react-icons/io5";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
