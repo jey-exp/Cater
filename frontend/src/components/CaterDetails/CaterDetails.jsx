@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../authContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Modal from '../Modal/Modal';
 import { PropagateLoader } from 'react-spinners';
+import { decode } from '../../utilities/helper';
 
 const CaterDetails = () => {
-  const {caterEmail} = useAuth();
   const [caterName, setCaterName] = useState(null);
   const [location, setLocation] = useState(null);
   const [about, setAbout] = useState(null);
@@ -19,10 +18,12 @@ const CaterDetails = () => {
   useEffect(()=>{
       try {
           const getAllcater = async ()=>{
+            const hahsedCaterEmail = JSON.parse(localStorage.getItem("caterEmail") || "");
+            const caterEmail = await decode(hahsedCaterEmail);
               const data={
                   caterEmail
               }
-              const response = await axios.post("http://localhost:3000/api/v1/getSpecificCater", data);
+              const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/getSpecificCater`, data);
               if(response.data.msg==="success"){
                   if(response.data.caterDetails.name){
                     setCaterName(response.data.caterDetails.name);
@@ -64,7 +65,7 @@ const CaterDetails = () => {
           location : location,
           email : caterEmail
         }
-        const response = await axios.post("http://localhost:3000/api/v1/caterapp/updatecater", data);
+        const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/updatecater`, data);
         if(response.data.msg==="success"){
           toast.success("Applied changes", {id:toastId});
           setRefresh(!refresh);

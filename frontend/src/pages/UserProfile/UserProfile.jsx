@@ -11,7 +11,7 @@ import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../authContext";
+import { decode } from "../../utilities/helper";
 import { IoChevronBackOutline } from "react-icons/io5";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -40,31 +40,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const UserProfile = () => {
   const navigate = useNavigate();
   const [orderDetails, setOrderDetails] = useState([]);
-  const { isAuthenticated, gmail } = useAuth();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/notauthenticated");
-    }
-  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await axios.post(
-          `http://localhost:3000/api/v1/getorderdetails`,
-          { gmail: gmail }
-        );
-        const data = response.data;
-        console.log(data);
-        setOrderDetails(data.data);
+        const user = localStorage.getItem("user");
+          const logged_user = await decode(user);
+          const response = await axios.post(
+            `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/getorderdetails`,
+            { email: logged_user }
+          );
+          const data = response.data;
+          setOrderDetails(data.data);
       } catch (error) {
         console.error("Error fetching the order details:", error);
       }
     };
 
     fetchOrderDetails();
-  }, [gmail]);
+  }, []);
 
   const handleBack = () => {
     navigate(-1);

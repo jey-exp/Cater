@@ -12,6 +12,8 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import secret_key from "../.config";
 import { useAuth } from "../../authContext";
+import { decode } from "../../utilities/helper";
+import toast from "react-hot-toast";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,20 +47,14 @@ const DietPlan = () => {
   const [paymentsuccess, setpaymentsuccess] = useState(false);
   const navigate = useNavigate();
   const { catername } = useParams();
-  const { isAuthenticated, gmail } = useAuth();
   const [caterEmail, setCaterEmail] = useState();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/notauthenticated");
-    }
-  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/catermenu/${catername}`
+          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${catername}`
         );
         const data = response.data;
         setBreakfast(data.data.filter((item) => item.time === "Breakfast"));
@@ -70,7 +66,7 @@ const DietPlan = () => {
       }
     };
     fetchData();
-  }, [catername]);
+  }, []);
 
   const handleAddFood = (food) => {
     setSelectedFoods([...selectedFoods, food]);
@@ -89,22 +85,25 @@ const DietPlan = () => {
 
   const addtouserProfile = async () => {
     try {
-      const data = { gmail, catername, totalAmount, caterEmail };
+      const user = localStorage.getItem("user");
+      const decoded_user = await decode(user);
+      const data = { gmail : decoded_user, catername, totalAmount, caterEmail };
       const response = await axios.post(
-        "http://localhost:3000/api/v1/addodertoprofile",
+        `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/addodertoprofile`,
         data
       );
     } catch (error) {
+      toast.error("Couldn't add order to profile");
       console.log("Error in addtoUserProfile", error);
     }
   };
 
   const handleCheckout = (e) => {
-    console.log("testing 1");
     e.preventDefault();
     try {
       if (totalAmount === 0) {
         alert("Please select something");
+        return;
       } else {
         var options = {
           key: process.env.REACT_APP_RAZORPAY_KEY,

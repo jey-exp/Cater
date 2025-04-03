@@ -7,13 +7,12 @@ const LogintoContinue = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/caterapp/login");
   };
   return (
     <div className="w-screen h-screen bg-gray-300 flex justify-center items-center flex-col gap-2">
       <div className="flex mr-8">
         <div className="flex gap-0">
-          {/* <img src={float} alt="float" className="w-80 h-80" /> */}
           <img src={popsicle} alt="login" className="w-96 h-96  " />
         </div>
         <div className="flex flex-col justify-center items-start gap-4">

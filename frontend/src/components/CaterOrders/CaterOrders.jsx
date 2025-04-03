@@ -1,7 +1,5 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast';
-import { useAuth } from '../../authContext';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,9 +9,9 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { PropagateLoader } from 'react-spinners';
+import { decode } from '../../utilities/helper';
 
 const CaterOrders = () => {
-  const {caterEmail} = useAuth();
   const [orders, setOrders] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -21,7 +19,9 @@ const CaterOrders = () => {
   useEffect(()=>{
     const gettingCaterOrders = async ()=>{
      try {
-        const response = await axios.post("http://localhost:3000/api/v1/caterapp/getcaterorders", {caterEmail : caterEmail});
+        const hashedCaterEmail = JSON.parse(localStorage.getItem("caterEmail"));
+        const caterEmail = await decode(hashedCaterEmail);
+        const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/getcaterorders`, {caterEmail : caterEmail});
         setOrders(response.data.data);
         setLoading(false);
      } catch (error) {

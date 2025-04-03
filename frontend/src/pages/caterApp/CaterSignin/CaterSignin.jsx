@@ -12,7 +12,6 @@ const CaterSignin = () => {
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
-  
   const handleusernameChange=(e)=>{
     setUsername(e.target.value);
   }
@@ -42,7 +41,7 @@ const CaterSignin = () => {
           gmail : email,
           pass :pass
         }
-        const response =await axios.post("http://localhost:3000/api/v1/caterapp/signin", data);
+        const response =await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/signin`, data);
         if (response.data.msg==="success"){
           toast.success("Signed In", {id:toastId});
           navigate("/caterapp/login");

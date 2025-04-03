@@ -7,7 +7,6 @@ const { json } = require("express");
 
 const Catersignin= async(req,res)=>{
     console.log("Signing in Cater");
-    
     const {name, gmail, pass} = req.body;
     try {
         const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE name=$1 OR email=$2",[name,gmail]);
@@ -34,17 +33,19 @@ const CaterLogin = async(req,res)=>{
         }
         else{
             const user = result.rows[0];
-            const isPasswordCorrect = bcrypt.compare(pass, user.pass);
+            const isPasswordCorrect = await bcrypt.compare(pass, user.pass);
+            console.log("isPasswordCorrect : ", isPasswordCorrect);
+            
             if(isPasswordCorrect){
                 res.status(200).json({msg:"success"});
             }
             else{
-                res.json({msg:"Imvalid credentials"});
+                return res.json({msg:"Invalid credentials"});
             }
         }
     } catch (error) {
         console.log("Error during cater login",error);
-        res.json({msg:"Something went wrong"});
+        res.json({msg:"Internal server error"});
     }
 }
 
