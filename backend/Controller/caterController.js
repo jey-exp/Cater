@@ -1,21 +1,18 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const {client} = require("../DB/connectDB");
-const { StatusCodes } = require("http-status-codes");
-const { json } = require("express");
-
+import {v4 as uuidv4} from "uuid"
 
 const Catersignin= async(req,res)=>{
     console.log("Signing in Cater");
     const {name, gmail, pass} = req.body;
     try {
-        const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE name=$1 OR email=$2",[name,gmail]);
+        const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE gmail=$1",[gmail]);
         if (emailAlreadyExists.rowCount!=0){
             return res.json({msg:"User already exists"});
         }
+        const uuid_id = uuidv4(gmail);
         const hashedPassword = await bcrypt.hash(pass,10);
-        const result = await client.query("INSERT INTO cater(name,email,pass) VALUES($1,$2,$3)",[name,gmail,hashedPassword]);
-
+        const result = await client.query("INSERT INTO cater(name,email,pass,uuid) VALUES($1,$2,$3,$4)",[name,gmail,hashedPassword,uuid_id]);
         return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error during cater sigin:", error);
@@ -34,10 +31,8 @@ const CaterLogin = async(req,res)=>{
         else{
             const user = result.rows[0];
             const isPasswordCorrect = await bcrypt.compare(pass, user.pass);
-            console.log("isPasswordCorrect : ", isPasswordCorrect);
-            
             if(isPasswordCorrect){
-                res.status(200).json({msg:"success"});
+                res.status(200).json({msg:"success", userData:user});
             }
             else{
                 return res.json({msg:"Invalid credentials"});
@@ -52,13 +47,12 @@ const CaterLogin = async(req,res)=>{
 
 const getSpecificCater = async(req,res)=>{
     console.log("Get specific cater");
-    const {caterEmail}= req.body;
-    console.log(caterEmail);
-    if(!caterEmail){
-        return res.json({msg:"No cater Email received!"})
+    const {uuid}= req.body;
+    if(!uuid){
+        return res.json({msg:"No cater uuid received!"})
     }
     try {
-        const response = await client.query("SELECT * FROM cater WHERE email=$1", [caterEmail]);        
+        const response = await client.query("SELECT * FROM cater WHERE uuid=$1", [uuid]);        
         const caterDetails = response.rows[0];
         return res.status(200).json({msg:"success", caterDetails: caterDetails,});
     } catch (error) {
@@ -69,18 +63,18 @@ const getSpecificCater = async(req,res)=>{
 
 const updateCaterDetails = async (req,res)=>{
     console.log("Updating cater details");
-    const {name, about, location, email} = req.body;
+    const {name, about, location, uuid} = req.body;
     try {
-        const response = await client.query("update cater set name = $1 , location = $2, about = $3 where email=$4", [name, location, about, email]);
+        const response = await client.query("update cater set name = $1 , location = $2, about = $3 where uuid=$4", [name, location, about, uuid]);
         const complete = await client.query(
             `UPDATE cater 
              SET complete = 'true' 
-             WHERE email = $1 
+             WHERE uuid = $1 
                AND name IS NOT NULL AND name <> '' 
                AND location IS NOT NULL AND location <> '' 
                AND about IS NOT NULL AND about <> '' 
                AND price IS NOT NULL AND price > 0`, 
-            [email]
+            [uuid]
           );
         return res.status(200).json({msg:"success"});
     } catch (error) {
@@ -93,7 +87,6 @@ const updateCaterDetails = async (req,res)=>{
 const addMenuRow = async (req,res)=>{
     console.log("Adding menu row");
     const data = req.body;
-    console.log(data);
     
     if(!data) {
         return res.json({msg:"No data is sent"});
@@ -124,9 +117,9 @@ const addMenuRow = async (req,res)=>{
 
 const getCaterOrders = async(req,res)=>{
     console.log("Getting cater orders");
-    const {caterEmail} = req.body;
+    const {uuid} = req.body;
     try {
-        const response = await client.query("select * from orders where cateremail = $1", [caterEmail])
+        const response = await client.query("select * from orders where uuid = $1", [uuid])
         const responseRows = response.rows;
         responseRows.forEach((item)=>{
             if (item.orderdate instanceof Date) {
