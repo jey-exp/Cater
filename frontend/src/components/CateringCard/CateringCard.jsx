@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GrFormNext } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 
-const CateringCard = ({ name, location, about, price }) => {
+const CateringCard = ({ name, location, about, price, uuid }) => {
   const [ab, setab] = useState(about);
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ const CateringCard = ({ name, location, about, price }) => {
   }, [ab]);
 
   const handleNextClick = () => {
-    navigate(`/cater/${name}`);
+    navigate(`/cater/${uuid}`);
   };
   return (
     <div className="">

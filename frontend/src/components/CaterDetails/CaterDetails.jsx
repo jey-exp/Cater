@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import Modal from '../Modal/Modal';
 import { PropagateLoader } from 'react-spinners';
 import { decode } from '../../utilities/helper';
+import {useCaterUuid} from "../../contextProvider.js"
 
 const CaterDetails = () => {
   const [caterName, setCaterName] = useState(null);
@@ -50,20 +51,21 @@ const CaterDetails = () => {
           
       } catch (error) {
           toast.error("Something went wrong");
-          console.log("Error");
+          console.log("Error in cater details : ", error);
           setLoading(false);
           
       }
   },[refresh])
 
   const handleUpdate = async (name, about, location)=>{
-    const toastId = toast.loading("Updating...")
+    const toastId = toast.loading("Updating...");
+    const caterUuid = JSON.parse(localStorage.getItem("caterId"));
       try {
         const data = {
           name : name,
           about : about,
           location : location,
-          email : caterEmail
+          uuid : caterUuid
         }
         const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/updatecater`, data);
         if(response.data.msg==="success"){
@@ -76,7 +78,7 @@ const CaterDetails = () => {
         setModalOpen(false);
         return;
       } catch (error) {
-        console.log("Error in uodating cater details" ,error);
+        console.log("Error in updating cater details" ,error);
         toast.error("Couldn't update", {id:toastId});
         setModalOpen(false);
         return;

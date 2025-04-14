@@ -62,11 +62,11 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/home" element={<Home />} />
             <Route
-              path="/cater/:catername"
+              path="/cater/:uuid"
               element={<Cater/>}
             />
             <Route
-              path="/dietplan/:catername"
+              path="/dietplan/:uuid"
               element={<DietPlan />}
             />
             <Route path="/profile" element={<UserProfile />} />

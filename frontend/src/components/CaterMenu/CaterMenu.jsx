@@ -8,7 +8,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import axios from 'axios';
-import { useAuth } from '../../authContext';
 import { PropagateLoader } from 'react-spinners';
 import MenuModal from '../MenuModal/MenuModal';
 import toast from 'react-hot-toast';
@@ -50,22 +49,14 @@ const CaterMenu = () => {
   useEffect(()=>{
     try {
       const gettingMenu = async ()=>{
-        const hahsedCaterEmail = JSON.parse(localStorage.getItem("caterEmail") || "");
-        const caterEmail = await decode(hahsedCaterEmail);
-        const data ={
-          caterEmail : caterEmail
+        const caterUuid = JSON.parse(localStorage.getItem("caterId"));
+        const res = await axios.get(`http://localhost:3000/api/v1/catermenu/${caterUuid}`)
+        if(res.data.msg==="success"){
+          setBreakfast(res.data.data.filter((item)=> item.time==="Breakfast"));
+          setLunch(res.data.data.filter((item)=> item.time==="Lunch"));
+          setDinner(res.data.data.filter((item)=> item.time==="Dinner"));
         }
-          const caterDetails = await axios.post("http://localhost:3000/api/v1/getspecificcater", data)
-          if(caterDetails.data.msg==="success"){
-            const caterName = caterDetails.data.caterDetails.name;
-            const res = await axios.get(`http://localhost:3000/api/v1/catermenu/${caterName}`)
-            if(res.data.msg==="success"){
-              setBreakfast(res.data.data.filter((item)=> item.time==="Breakfast"));
-              setLunch(res.data.data.filter((item)=> item.time==="Lunch"));
-              setDinner(res.data.data.filter((item)=> item.time==="Dinner"));
-            }
-          }
-          setLoading(false);
+        setLoading(false);
       }
       gettingMenu();
     } catch (error) {

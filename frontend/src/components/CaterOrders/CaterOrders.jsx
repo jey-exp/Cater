@@ -19,9 +19,8 @@ const CaterOrders = () => {
   useEffect(()=>{
     const gettingCaterOrders = async ()=>{
      try {
-        const hashedCaterEmail = JSON.parse(localStorage.getItem("caterEmail"));
-        const caterEmail = await decode(hashedCaterEmail);
-        const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/getcaterorders`, {caterEmail : caterEmail});
+        const caterUuid = JSON.parse(localStorage.getItem("caterId"));
+        const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/getcaterorders`, {uuid : caterUuid});
         setOrders(response.data.data);
         setLoading(false);
      } catch (error) {

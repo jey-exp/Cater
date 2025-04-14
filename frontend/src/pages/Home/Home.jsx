@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { CateringCard, Navbar } from "../../components";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import TruncatedText from "../../components/TruncatedText/TruncatedText";
 import {toast} from "react-hot-toast";
 import {PropagateLoader} from "react-spinners";
 
 const Home = () => {
-  const navigate = useNavigate();
   const [cater, setcater] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
@@ -60,6 +58,7 @@ const Home = () => {
               location={item.location}
               about={<TruncatedText text={item.about} limit={70} />}
               price={item.price}
+              uuid = {item.uuid}
             />
           ))}
         </div>

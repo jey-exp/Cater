@@ -1,16 +1,12 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { StatusCodes } = require("http-status-codes");
-const { client } = require("../DB/connectDB");
-const stripe = require("stripe")("your_stripe_secret_key");
-
+const {client} = require("../DB/connectDB.js")
 
 
 const getCatermenu = async (req, res) => {
   console.log("Getting cater menu");
-  let catername = "";
+  let uuid = "";
   try {
-    catername = req.params.catername;
+    uuid = req.params.uuid;
+    
   } catch (err) {
     console.log("Error finding the cater name", err);
     return res.status(400).json({ msg: "Invalid catername parameter!" });
@@ -18,8 +14,8 @@ const getCatermenu = async (req, res) => {
 
   try {
     const result = await client.query(
-      "SELECT * FROM catermenu WHERE catername=$1",
-      [catername]
+      "SELECT * FROM catermenu WHERE uuid=$1",
+      [uuid]
     );
 
     if (result.rowCount === 0) {
@@ -54,9 +50,12 @@ const getallCater = async (req, res) => {
 
 const addOrderToProfile = async (req, res) => {
   try {
-    const { gmail, catername, totalAmount, caterEmail } = req.body;
+    const { gmail, uuid, totalAmount, caterEmail } = req.body;
     console.log("adding order to profile");
-    await client.query("INSERT INTO orders(cateremail, customeremail, price, catername) VALUES($1,$2,$3,$4)", [caterEmail, gmail, totalAmount, catername]);
+    const response = await client.query("select * from cater where uuid = $1", [uuid]);
+    const caterName = response.rows[0].name;
+    console.log("Cater name : ", caterName);
+    await client.query("INSERT INTO orders(cateremail, customeremail, price, uuid, catername) VALUES($1,$2,$3,$4, $5)", [caterEmail, gmail, totalAmount, uuid, caterName]);
     return res.status(200).json({ msg: "success" });
   } catch (error) {
     console.error("Error in adding order to profile:", error);
@@ -78,9 +77,5 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
-module.exports = {
-  getCatermenu,
-  getallCater,
-  addOrderToProfile,
-  getOrderDetails,
-};
+
+module.exports = {getCatermenu, getallCater, addOrderToProfile, getOrderDetails}

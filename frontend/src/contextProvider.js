@@ -10,6 +10,16 @@ const supa = (set, get) =>({
     }
 })
 
+const uuid = (set,get) =>({
+    uuid : null,
+    setUuid : (uuidProp) =>{
+        set(()=>({
+            uuid:uuidProp
+        }))
+    }
+})
+
 const useSupaBase = create(supa);
+export const useCaterUuid = create(uuid);
 
 export default useSupaBase;
