@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
-import { useAuth } from '../../authContext';
+import { decode } from '../../utilities/helper';
 
 const MenuModal = ({onClose, onSubmit, time} ) => {
     const [food, setFood] = useState("");
@@ -8,16 +8,23 @@ const MenuModal = ({onClose, onSubmit, time} ) => {
     const [fat, setFat] = useState("");
     const [calorie, setCalorie] = useState("");
     const [price, setPrice] = useState("");
-    const {caterEmail} = useAuth();
 
 
-    const handleSubmit = ()=>{
-        if(food === "" || proteins === "" || fat === "" || calorie === "" || price === ""){
-            return toast('Fill all fields' , {icon : '❗'})
+    const handleSubmit = async ()=>{
+        try {
+            if(food === "" || proteins === "" || fat === "" || calorie === "" || price === ""){
+                return toast('Fill all fields' , {icon : '❗'})
+            }
+            console.log("Handling from menu modal");
+            const caterUuid = JSON.parse(localStorage.getItem("caterId"));
+            const caterEmailCoded = JSON.parse(localStorage.getItem("caterEmail"));
+            const caterEmail = await decode(caterEmailCoded);
+            const data =[ caterEmail, time, food, proteins, fat, calorie, price, caterUuid];
+            onSubmit(data);
+        } catch (error) {
+            console.log("Error in adding menu : ", error);
+            toast.error("Couldn't add menu");
         }
-        console.log("Handling from menu modal");
-        const data =[ caterEmail, time, food, proteins, fat, calorie, price];
-        onSubmit(data);
     }
 
   return (

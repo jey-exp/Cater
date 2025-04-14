@@ -2,17 +2,18 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../authContext';
 import { PiEyeSlashLight } from "react-icons/pi";
 import { FaRegEye } from "react-icons/fa";
 import { hash } from '../../../utilities/helper';
+import { useCaterUuid } from '../../../contextProvider';
 
 const CaterLogin = () => {
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
     const [showPass, setShowPass] = useState(false);
+    const setCaterUuid = useCaterUuid((state) => state.setUuid);
+    const caterUuid = useCaterUuid((state)=>state.uuid);
     const navigate = useNavigate();
-    const {caterLogin, logout, setCaterEmail} = useAuth();
   
   
     const handlechangetosigin=(e)=>{
@@ -41,10 +42,14 @@ const CaterLogin = () => {
             const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/login`, data);
             if(response.data.msg==="success"){
               const hashedEmail = await hash(email);
+              const caterUuid = response.data.userData.uuid;
+              setCaterUuid(caterUuid);
               localStorage.setItem("caterAuth", JSON.stringify(true));
               localStorage.setItem("caterEmail", JSON.stringify(hashedEmail));
-                toast.success("Logged In", {id:toastId});
-                navigate("/caterapp/home");
+              localStorage.setItem("caterId", JSON.stringify(caterUuid));
+              toast.success("Logged In", {id:toastId});
+              navigate("/caterapp/home");
+              return;
             }
             else if(response.data.msg==="User not found" || response.data.msg==="Invalid credentials" || response.data.msg==="Internal server error"){
                 toast.error(response.data.msg, {id:toastId});
@@ -52,7 +57,6 @@ const CaterLogin = () => {
         } catch (error) {
             console.log("Error while loggin in cater:", error);
             toast.error(error.response.data.msg, {id:toastId})
-            
         }
     }
   return (

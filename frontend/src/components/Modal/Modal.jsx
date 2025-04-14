@@ -20,9 +20,7 @@ const Modal = ({ isOpen, onClose, name, about, location, onUpdate }) => {
     if(e.target.value===""){
         return setCaterName(null);
     }
-    // setCaterName(e.target.value);
-      toast.dismiss();
-      toast.error("Name can't be changed now");
+    setCaterName(e.target.value);
   };
 
   const handleLocation = (e) => {

@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../authContext";
 import toast from "react-hot-toast";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -41,27 +40,23 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const Cater = () => {
   const navigate = useNavigate();
-  const { catername } = useParams();
+  const { uuid } = useParams();
   const [breakfast, setBreakfast] = useState([]);
   const [lunch, setLunch] = useState([]);
   const [dinner, setDinner] = useState([]);
-  const { login, logout, isAuthenticated } = useAuth();
+  const [caterName, setCaterName] = useState("");
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/notauthenticated");
-    }
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("Cater uuid : ", uuid);
+        
         const response = await axios.get(
-          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${catername}`
+          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${uuid}`
         );
         const data = response.data;
         console.log(data);
-
         setBreakfast(data.data.filter((item) => item.time === "Breakfast"));
         setLunch(data.data.filter((item) => item.time === "Lunch"));
         setDinner(data.data.filter((item) => item.time === "Dinner"));
@@ -72,14 +67,14 @@ const Cater = () => {
     };
 
     fetchData();
-  }, [catername]);
+  }, []);
 
   const handleBack = () => {
     navigate("/home");
   };
 
   const handleSetDietPlan = () => {
-    navigate(`/dietplan/${catername}`);
+    navigate(`/dietplan/${uuid}`);
   };
 
   return (
@@ -94,7 +89,7 @@ const Cater = () => {
             <IoChevronBackOutline />
             Back
           </button>
-          <h3 className="text-3xl font-medium">{catername}</h3>
+          <h3 className="text-3xl font-medium">Catername</h3>
           <div></div>
         </div>
         <div className="flex justify-between w-screen items-center">

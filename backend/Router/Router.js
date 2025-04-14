@@ -9,7 +9,7 @@ const {
 
 const {Catersignin, CaterLogin, getSpecificCater, updateCaterDetails, addMenuRow, getCaterOrders} = require("../Controller/caterController");
 
-router.route("/catermenu/:catername").get(getCatermenu);
+router.route("/catermenu/:uuid").get(getCatermenu);
 router.route("/getallcater").get(getallCater);
 router.route("/addodertoprofile").post(addOrderToProfile);
 router.route("/getorderdetails").post(getOrderDetails);

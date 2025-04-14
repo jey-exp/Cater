@@ -1,21 +1,18 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const {client} = require("../DB/connectDB");
-const { StatusCodes } = require("http-status-codes");
-const { json } = require("express");
-
+const {client}= require("../DB/connectDB.js");
+const {v4}  = require("uuid");
 
 const Catersignin= async(req,res)=>{
     console.log("Signing in Cater");
-    const {name, gmail, pass} = req.body;
+    const {name, gmail, pass} = req.body;   
     try {
-        const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE name=$1 OR email=$2",[name,gmail]);
+        const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE email=$1",[gmail]);
         if (emailAlreadyExists.rowCount!=0){
             return res.json({msg:"User already exists"});
         }
+        const uuid_id = v4(gmail);
         const hashedPassword = await bcrypt.hash(pass,10);
-        const result = await client.query("INSERT INTO cater(name,email,pass) VALUES($1,$2,$3)",[name,gmail,hashedPassword]);
-
+        const result = await client.query("INSERT INTO cater(name,email,pass,uuid) VALUES($1,$2,$3,$4)",[name,gmail,hashedPassword,uuid_id]);
         return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error during cater sigin:", error);
@@ -34,12 +31,12 @@ const CaterLogin = async(req,res)=>{
         else{
             const user = result.rows[0];
             const isPasswordCorrect = await bcrypt.compare(pass, user.pass);
-            console.log("isPasswordCorrect : ", isPasswordCorrect);
-            
             if(isPasswordCorrect){
-                res.status(200).json({msg:"success"});
+                console.log("Cater login successfull");
+                res.status(200).json({msg:"success", userData:user});
             }
             else{
+                console.log("Invalid credentials in cater login");
                 return res.json({msg:"Invalid credentials"});
             }
         }
@@ -53,9 +50,8 @@ const CaterLogin = async(req,res)=>{
 const getSpecificCater = async(req,res)=>{
     console.log("Get specific cater");
     const {caterEmail}= req.body;
-    console.log(caterEmail);
     if(!caterEmail){
-        return res.json({msg:"No cater Email received!"})
+        return res.json({msg:"No cater email received!"})
     }
     try {
         const response = await client.query("SELECT * FROM cater WHERE email=$1", [caterEmail]);        
@@ -69,18 +65,18 @@ const getSpecificCater = async(req,res)=>{
 
 const updateCaterDetails = async (req,res)=>{
     console.log("Updating cater details");
-    const {name, about, location, email} = req.body;
+    const {name, about, location, uuid} = req.body;
     try {
-        const response = await client.query("update cater set name = $1 , location = $2, about = $3 where email=$4", [name, location, about, email]);
+        const response = await client.query("update cater set name = $1 , location = $2, about = $3 where uuid=$4", [name, location, about, uuid]);
         const complete = await client.query(
             `UPDATE cater 
              SET complete = 'true' 
-             WHERE email = $1 
+             WHERE uuid = $1 
                AND name IS NOT NULL AND name <> '' 
                AND location IS NOT NULL AND location <> '' 
                AND about IS NOT NULL AND about <> '' 
                AND price IS NOT NULL AND price > 0`, 
-            [email]
+            [uuid]
           );
         return res.status(200).json({msg:"success"});
     } catch (error) {
@@ -93,15 +89,11 @@ const updateCaterDetails = async (req,res)=>{
 const addMenuRow = async (req,res)=>{
     console.log("Adding menu row");
     const data = req.body;
-    console.log(data);
-    
     if(!data) {
         return res.json({msg:"No data is sent"});
     }
     try {
-        const response = await client.query('SELECT name FROM cater where email=$1', [data[0]]);
-        const caterName = response.rows[0].name;
-        await client.query('INSERT INTO catermenu VALUES($1,$2,$3,$4,$5, $6, $7, $8)', [caterName, data[2], data[3], data[4], data[5], data[6], data[1], data[0]]);
+        await client.query('INSERT INTO catermenu VALUES($1,$2,$3,$4,$5, $6, $7, $8)', [data[2], data[3], data[4], data[5], data[6], data[1], data[0], data[7]]);
         const avg = await client.query("SELECT AVG(price) FROM catermenu WHERE email = $1", [data[0]]);
         const updatePrice = await client.query("update cater set price = $1 where email = $2", [Math.round(avg.rows[0].avg) , data[0]]);
         const complete = await client.query(
@@ -124,9 +116,9 @@ const addMenuRow = async (req,res)=>{
 
 const getCaterOrders = async(req,res)=>{
     console.log("Getting cater orders");
-    const {caterEmail} = req.body;
+    const {uuid} = req.body;
     try {
-        const response = await client.query("select * from orders where cateremail = $1", [caterEmail])
+        const response = await client.query("select * from orders where uuid = $1", [uuid])
         const responseRows = response.rows;
         responseRows.forEach((item)=>{
             if (item.orderdate instanceof Date) {

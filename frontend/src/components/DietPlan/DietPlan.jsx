@@ -11,7 +11,6 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import secret_key from "../.config";
-import { useAuth } from "../../authContext";
 import { decode } from "../../utilities/helper";
 import toast from "react-hot-toast";
 
@@ -46,7 +45,7 @@ const DietPlan = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [paymentsuccess, setpaymentsuccess] = useState(false);
   const navigate = useNavigate();
-  const { catername } = useParams();
+  const { uuid } = useParams();
   const [caterEmail, setCaterEmail] = useState();
 
 
@@ -54,7 +53,7 @@ const DietPlan = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${catername}`
+          `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${uuid}`
         );
         const data = response.data;
         setBreakfast(data.data.filter((item) => item.time === "Breakfast"));
@@ -87,7 +86,7 @@ const DietPlan = () => {
     try {
       const user = localStorage.getItem("user");
       const decoded_user = await decode(user);
-      const data = { gmail : decoded_user, catername, totalAmount, caterEmail };
+      const data = { gmail : decoded_user, totalAmount, caterEmail, uuid : uuid };
       const response = await axios.post(
         `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/addodertoprofile`,
         data
@@ -156,7 +155,7 @@ const DietPlan = () => {
         <div className="flex justify-between items-center w-screen mt-4">
           <button
             className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4 rounded drop-shadow-lg"
-            onClick={() => navigate(`/cater/${catername}`)}
+            onClick={() => navigate(`/cater/${uuid}`)}
           >
             Back
           </button>
