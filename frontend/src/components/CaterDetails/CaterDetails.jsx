@@ -19,10 +19,11 @@ const CaterDetails = () => {
   useEffect(()=>{
       try {
           const getAllcater = async ()=>{
-            const hahsedCaterEmail = JSON.parse(localStorage.getItem("caterEmail") || "");
-            const caterEmail = await decode(hahsedCaterEmail);
+            const caterId = JSON.parse(localStorage.getItem("caterId") || "");
+            console.log("Cater id : ", caterId);
+            
               const data={
-                  caterEmail
+                  uuid : caterId
               }
               const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/getSpecificCater`, data);
               if(response.data.msg==="success"){

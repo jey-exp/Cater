@@ -49,12 +49,12 @@ const CaterLogin = async(req,res)=>{
 
 const getSpecificCater = async(req,res)=>{
     console.log("Get specific cater");
-    const {caterEmail}= req.body;
-    if(!caterEmail){
-        return res.json({msg:"No cater email received!"})
+    const {uuid}= req.body;
+    if(!uuid){
+        return res.json({msg:"No cater ID received!"})
     }
     try {
-        const response = await client.query("SELECT * FROM cater WHERE email=$1", [caterEmail]);        
+        const response = await client.query("SELECT * FROM cater WHERE uuid=$1", [uuid]);        
         const caterDetails = response.rows[0];
         return res.status(200).json({msg:"success", caterDetails: caterDetails,});
     } catch (error) {

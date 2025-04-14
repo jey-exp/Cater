@@ -50,19 +50,18 @@ const Cater = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Cater uuid : ", uuid);
-        
+        const caterDetailsResponse = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/getspecificcater`, {uuid});
+        setCaterName(caterDetailsResponse.data.caterDetails.name);
         const response = await axios.get(
           `${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/catermenu/${uuid}`
         );
         const data = response.data;
-        console.log(data);
         setBreakfast(data.data.filter((item) => item.time === "Breakfast"));
         setLunch(data.data.filter((item) => item.time === "Lunch"));
         setDinner(data.data.filter((item) => item.time === "Dinner"));
       } catch (error) {
         toast.error(error.response.data.msg);
-        console.error("Error fetching the catering menu data:", error);
+        console.error("Error fetching the catering data", error);
       }
     };
 
@@ -89,7 +88,7 @@ const Cater = () => {
             <IoChevronBackOutline />
             Back
           </button>
-          <h3 className="text-3xl font-medium">Catername</h3>
+          <h3 className="text-3xl font-medium">{caterName ? caterName : <span className="text-xl text-slate-500">Loading...</span>}</h3>
           <div></div>
         </div>
         <div className="flex justify-between w-screen items-center">
