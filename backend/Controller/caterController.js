@@ -8,7 +8,7 @@ const Catersignin= async(req,res)=>{
     try {
         const emailAlreadyExists = await client.query("SELECT * FROM cater WHERE email=$1",[gmail]);
         if (emailAlreadyExists.rowCount!=0){
-            return res.json({msg:"User already exists"});
+            return res.status(500).json({error:"User already exists!"});
         }
         const uuid_id = v4(gmail);
         const hashedPassword = await bcrypt.hash(pass,10);
@@ -16,7 +16,7 @@ const Catersignin= async(req,res)=>{
         return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error during cater sigin:", error);
-        return res.json({msg:"Something went wrong"});
+        return res.status(400).json({error:"Something went wrong"});
     }
 }
 
@@ -26,7 +26,7 @@ const CaterLogin = async(req,res)=>{
     try {
         const result = await client.query("SELECT * FROM cater WHERE email=$1", [gmail]);
         if(result.rowCount===0){
-            res.json({msg:"User not found"});
+            res.status(400).json({error:"User not found"});
         }
         else{
             const user = result.rows[0];
@@ -37,12 +37,12 @@ const CaterLogin = async(req,res)=>{
             }
             else{
                 console.log("Invalid credentials in cater login");
-                return res.json({msg:"Invalid credentials"});
+                return res.status(400).json({error:"Invalid credentials"});
             }
         }
     } catch (error) {
         console.log("Error during cater login",error);
-        res.json({msg:"Internal server error"});
+        res.status(400).json({error:"Internal server error"});
     }
 }
 
@@ -50,16 +50,13 @@ const CaterLogin = async(req,res)=>{
 const getSpecificCater = async(req,res)=>{
     console.log("Get specific cater");
     const {uuid}= req.body;
-    if(!uuid){
-        return res.json({msg:"No cater ID received!"})
-    }
     try {
         const response = await client.query("SELECT * FROM cater WHERE uuid=$1", [uuid]);        
         const caterDetails = response.rows[0];
         return res.status(200).json({msg:"success", caterDetails: caterDetails,});
     } catch (error) {
         console.log("Error in get specific cater : ", error);
-        return res.json({msg:"Something went wrong"});
+        return res.status(400).json({error:"Something went wrong"});
     }
 }
 
@@ -81,7 +78,7 @@ const updateCaterDetails = async (req,res)=>{
         return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error from update cater details : ", error);
-        return res.status(200).json({msg:"Something went wrong"});
+        return res.status(400).json({error:"Something went wrong"});
     }
 }
 
@@ -90,7 +87,7 @@ const addMenuRow = async (req,res)=>{
     console.log("Adding menu row");
     const data = req.body;
     if(!data) {
-        return res.json({msg:"No data is sent"});
+        return res.status(400).json({error:"Something went wrong"});
     }
     try {
         await client.query('INSERT INTO catermenu VALUES($1,$2,$3,$4,$5, $6, $7, $8)', [data[2], data[3], data[4], data[5], data[6], data[1], data[0], data[7]]);
@@ -107,10 +104,10 @@ const addMenuRow = async (req,res)=>{
             [data[0]]
           );
           console.log("Added menu item");
-        return res.json({msg:"success"});
+        return res.status(200).json({msg:"success"});
     } catch (error) {
         console.log("Error in adding new row : ", error);
-        return res.json({msg:"Something went wrong "});
+        return res.status(400).json({error:"Something went wrong "});
     }
 }
 
@@ -125,10 +122,10 @@ const getCaterOrders = async(req,res)=>{
                 item.orderdate = item.orderdate.toISOString().split("T")[0];
             }
         })
-        return res.json({msg:"success", data:response.rows});
+        return res.status(200).json({msg:"success", data:response.rows});
     } catch (error) {
         console.log("Error in getting cater orders", error);
-        return res.json({msg:"Something went wrong"});
+        return res.status(400).json({error:"Something went wrong"});
     }
 }
 
