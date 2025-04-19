@@ -60,8 +60,13 @@ const CaterMenu = () => {
       }
       gettingMenu();
     } catch (error) {
-      console.log("Error when fetching cater menu", error);
-      toast.error(error.response.data.msg);
+      if(error.response?.data?.error){
+        toast.error(error.response.data.error);
+      }
+      else{
+        toast.error(error.response.message);
+      }
+      console.error("Error in gettting cater menu : ", error.message);
       setLoading(false);
     }
 },[refreshMenu])
@@ -73,15 +78,16 @@ const CaterMenu = () => {
       if(response.data.msg==="success"){
         toast.success(`Added new row in ${data[1]}`, {id:toastId});
       }
-      if(response.data.msg==="No data is sent"){
-        toast.error("Error while adding new menu item", {id:toastId});
-        console.log("[Adding new menu row] Data is not sent to backend properly");
-      }
       setMenuModal(false);
       setRefreshMenu(!refreshMenu);
     } catch (error) {
-      console.log("Error in adding new row : ", error);
-      toast.error(error.response.data.msg, {id:toastId});
+      console.error("Error in adding new row : ", error);
+      if(error.response?.data?.error){
+        toast.error(error.response.data.error, {id:toastId});
+      }
+      else{
+        toast.error(error.message, {id:toastId});
+      }
       setMenuModal(false);
       setRefreshMenu(!refreshMenu);
     }

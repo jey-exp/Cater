@@ -60,7 +60,12 @@ const Cater = () => {
         setLunch(data.data.filter((item) => item.time === "Lunch"));
         setDinner(data.data.filter((item) => item.time === "Dinner"));
       } catch (error) {
-        toast.error(error.response.data.msg);
+        if(error.response?.data?.error){
+          toast.error(error.response.data.error);
+        }
+        else{
+          toast.error(error.message);
+        }
         console.error("Error fetching the catering data", error);
       }
     };

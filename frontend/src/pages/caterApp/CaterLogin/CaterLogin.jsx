@@ -51,12 +51,14 @@ const CaterLogin = () => {
               navigate("/caterapp/home");
               return;
             }
-            else if(response.data.msg==="User not found" || response.data.msg==="Invalid credentials" || response.data.msg==="Internal server error"){
-                toast.error(response.data.msg, {id:toastId});
-            }
         } catch (error) {
-            console.log("Error while loggin in cater:", error);
-            toast.error(error.response.data.msg, {id:toastId})
+          if(error.response?.data?.error){
+            toast.error(error.response.data.error, {id:toastId});
+          }
+          else{
+            toast.error(error.message, {id:toastId});
+          }
+          console.error("Error while loggin in cater:", error);
         }
     }
   return (

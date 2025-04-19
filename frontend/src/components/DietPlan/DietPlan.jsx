@@ -61,7 +61,13 @@ const DietPlan = () => {
         setDinner(data.data.filter((item) => item.time === "Dinner"));
         setCaterEmail(response.data.data[0].email);
       } catch (err) {
-        console.log("Error in fetching data in diet plan", err);
+        if(err.response?.data?.error){
+          toast.error(err.response.data.error);
+        }
+        else{
+          toast.error(err.message);
+        }
+        console.error("Error in fetching data in diet plan", err);
       }
     };
     fetchData();
@@ -92,8 +98,13 @@ const DietPlan = () => {
         data
       );
     } catch (error) {
-      toast.error("Couldn't add order to profile");
-      console.log("Error in addtoUserProfile", error);
+      if(error.response?.data?.error){
+        toast.error(error.response.data.error);
+      }
+      else{
+        toast.error(error.message);
+      }
+      console.error("Error in add to User Profile", error);
     }
   };
 
