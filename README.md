@@ -74,6 +74,7 @@ This is a simple project developed for practicing React Js, combining both front
 - *Rename .env.template to .env*
 - Update .env file with appropriate credentials
 - Note: RazorPay API key is required for payment testing (optional)
+- Note: Creating a [Supabase](https://www.supabase.com) is mandatory to run the project successfully.
 
 4. Start the frontend development server:
     ```bash
