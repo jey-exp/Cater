@@ -47,10 +47,16 @@ function App() {
     if (!session) {
       return (
         <div>
-            <Router>
-              <Login />
-              <Toaster/>
-            </Router>
+          <Router>
+            <Routes>
+              <Route path="/caterapp/signin" element={<CaterSignin />} />
+              <Route path="/caterapp/login" element={<CaterLogin />} />
+              <Route path="/caterapp/home" element={<CaterHome />} />
+              <Route path="/notauthenticated" element={<LogintoContinue />} />
+              <Route path="/*" element={<Login />} />
+            </Routes>
+            <Toaster />
+          </Router>
         </div>
       );
     }
