@@ -6,7 +6,7 @@ This is a simple project developed for practicing React Js, combining both front
 ## Technologies Used
 
 ### Frontend
-- ReactJs
+- ReactJs With Vite
 - Tailwind CSS
 
 ### Backend
@@ -14,6 +14,7 @@ This is a simple project developed for practicing React Js, combining both front
 - ExpressJs
 - PostgreSql
 - Drizzle ORM
+- Supabase
 
 ## Setup Guide
 
@@ -50,7 +51,7 @@ This is a simple project developed for practicing React Js, combining both front
     npm start
     ```
 6. Verify Database Connection:
-- If terminal displays "DB connected" ✅ - Setup successful! 🎉🥳
+- If terminal displays "DB connected ✅" - Setup successful! 🎉🥳
 - If an error occurs, most likely due to incorrect credentials in .env
 - Double-check your database connection details
 
@@ -73,10 +74,11 @@ This is a simple project developed for practicing React Js, combining both front
 - *Rename .env.template to .env*
 - Update .env file with appropriate credentials
 - Note: RazorPay API key is required for payment testing (optional)
+- Note: Creating a [Supabase](https://www.supabase.com) is mandatory to run the project successfully.
 
 4. Start the frontend development server:
     ```bash
-    npm start
+    npm run dev
     ```
 
 
