@@ -26,33 +26,31 @@ const CaterDetails = () => {
                   uuid : caterId
               }
               const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/getSpecificCater`, data);
-              if(response.data.msg==="success"){
-                  if(response.data.caterDetails.name){
-                    setCaterName(response.data.caterDetails.name);
-                  }
-                  if(response.data.caterDetails.location){
+              if (response.data.caterDetails.name) {
+                setCaterName(response.data.caterDetails.name);
+              }
+              if(response.data.caterDetails.location){
                     setLocation(response.data.caterDetails.location);
                   }
-                  if(response.data.caterDetails.about){
+              if(response.data.caterDetails.about){
                     setAbout(response.data.caterDetails.about);
                   }
-                  if(response.data.caterDetails.email){
+              if(response.data.caterDetails.email){
                     setEmail(response.data.caterDetails.email);
                   }
-                  setLoading(false);
-                  return;
-              }
-              else{
-                  console.log(response.data.msg);
-                  toast.error("Something went wrong");
-                  setLoading(false);
-              }
+              setLoading(false);
+              return;
           }
           getAllcater();
           
       } catch (error) {
-          toast.error("Something went wrong");
-          console.log("Error in cater details : ", error);
+          if(error.response?.data?.error){
+            toast.error(error.response.data.error);
+          }
+          else{
+            toast.error(error.message);
+          }
+          console.error("Error in cater details : ", error);
           setLoading(false);
           
       }
@@ -69,20 +67,19 @@ const CaterDetails = () => {
           uuid : caterUuid
         }
         const response = await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/updatecater`, data);
-        if(response.data.msg==="success"){
-          toast.success("Applied changes", {id:toastId});
-          setRefresh(!refresh);
-        }
-        else{
-          toast.error("Error in updating...", {id:toastId});
-        }
+        toast.success("Applied changes", {id:toastId});
+        setRefresh(!refresh);
         setModalOpen(false);
         return;
       } catch (error) {
-        console.log("Error in updating cater details" ,error);
-        toast.error("Couldn't update", {id:toastId});
+        if(error.response?.data?.error){
+          toast.error(error.response.data.error, {id:toastId});
+        }
+        else{
+          toast.error(error.message, {id:toastId});
+        }
+        console.error("Error in updating cater details", error);
         setModalOpen(false);
-        return;
       }
   }
   return (

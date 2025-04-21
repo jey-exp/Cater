@@ -20,13 +20,13 @@ const Home = () => {
           const data = response.data;
           setcater(data.data);
         } catch (err) {
-          if(err.response?.data){
-            toast.error(err.response.data.msg)
+          if(err.response?.data?.error){
+            toast.error(err.response.data?.error);
           }
           else{
-            toast.error("Unexpected error occured");
+            toast.error(err.message);
           }
-          console.log("Error in fetching cater details", err);
+          console.error("Error in getting caters : ", err.message);
         }
         finally{
           setLoading(false);          

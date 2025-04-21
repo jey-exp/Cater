@@ -42,21 +42,16 @@ const CaterSignin = () => {
           pass :pass
         }
         const response =await axios.post(`${process.env.REACT_APP_HOST_ENDPOINT}/api/v1/caterapp/signin`, data);
-        if (response.data.msg==="success"){
-          toast.success("Signed In", {id:toastId});
-          navigate("/caterapp/login");
+        toast.success("Signed In", {id:toastId});
+        navigate("/caterapp/login");
+      } catch (error) {
+        if(error.response?.data?.error){
+          toast.error(error.response.data.error, {id:toastId});
         }
         else{
-          if(response.data.msg==="User already exists"){
-            toast.error("User already exist", {id:toastId});
-          }
-          else{
-            toast.error("Unexpected error occured")
-          }
+          toast.error(error.message, {id:toastId});
         }
-      } catch (error) {
-        toast.error(error.response.data.msg, {id:toastId});
-        console.log("Error in signing in cater:", error);
+        console.error("Error in signing in cater:", error);
         
       }
     }

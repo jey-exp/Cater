@@ -59,15 +59,10 @@ export const Signin = () => {
       if (response.data.msg === "success") {
         navigate("/login");
         toast.success("Signed In :)", {id:toastId})
-      } else if(response.data.msg === "User already exists") {
-        toast.error("Email already exist!", {id:toastId});
-      }
-      else{
-        toast.error("Unexpected error occured", {id:toastId});
-      }
+      } 
     } catch (err) {
-      if(err.response?.data){
-        toast.error(err.response.data.msg, {id:toastId});
+      if(err.response?.data?.error){
+        toast.error(err.response.data.error, {id:toastId});
       }
       else{
         toast.error(err.message, {id:toastId});

@@ -24,7 +24,13 @@ const CaterOrders = () => {
         setOrders(response.data.data);
         setLoading(false);
      } catch (error) {
-      console.log(error.response.data.msg, error);
+      console.error("Error in getting cater orders : ", error);
+      if(error.response?.data?.error){
+        toast.error(error.response.data.error);
+      }
+      else{
+        toast.error(error.message);
+      }
       setLoading(false);
      }
     }

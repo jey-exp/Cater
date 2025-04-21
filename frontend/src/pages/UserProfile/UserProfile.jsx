@@ -54,6 +54,12 @@ const UserProfile = () => {
           const data = response.data;
           setOrderDetails(data.data);
       } catch (error) {
+        if(error.response?.data?.error){
+          toast.error(error.response.data.error);
+        }
+        else{
+          toast.error(error.message);
+        }
         console.error("Error fetching the order details:", error);
       }
     };
