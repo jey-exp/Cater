@@ -93,3 +93,5 @@ This is a simple project developed for practicing React Js, combining both front
 - If you encounter any issues during setup, please raise an issue in the project repository.
 
 ### Happy Hacking🎉!
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/jey-exp/Cater?utm_source=oss&utm_medium=github&utm_campaign=jey-exp%2FCater&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
