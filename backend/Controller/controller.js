@@ -12,7 +12,8 @@ const getCatermenu = async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(400).json({ error: "Something went wrong" });
+      console.log("---No menu available---");
+      return res.status(404).json({ error: "No menu available." });
     }
     res
       .status(200)

@@ -47,28 +47,29 @@ const CaterMenu = () => {
   const [refreshMenu, setRefreshMenu] = useState(false);
 
   useEffect(()=>{
+    const fetchMenu = async () => {
     try {
-      const gettingMenu = async ()=>{
-        const caterUuid = JSON.parse(localStorage.getItem("caterId"));
-        const res = await axios.get(`http://localhost:3000/api/v1/catermenu/${caterUuid}`)
-        if(res.data.msg==="success"){
-          setBreakfast(res.data.data.filter((item)=> item.time==="Breakfast"));
-          setLunch(res.data.data.filter((item)=> item.time==="Lunch"));
-          setDinner(res.data.data.filter((item)=> item.time==="Dinner"));
-        }
-        setLoading(false);
+      const caterUuid = JSON.parse(localStorage.getItem("caterId"));
+      const res = await axios.get(`http://localhost:3000/api/v1/catermenu/${caterUuid}`);
+      console.log("res : ", res);
+      if (res.data.msg === "success") {
+        setBreakfast(res.data.data.filter(item => item.time === "Breakfast"));
+        setLunch(res.data.data.filter(item => item.time === "Lunch"));
+        setDinner(res.data.data.filter(item => item.time === "Dinner"));
       }
-      gettingMenu();
     } catch (error) {
-      if(error.response?.data?.error){
+      if (error.response?.data?.error) {
         toast.error(error.response.data.error);
+      } else {
+        toast.error(error.message);
       }
-      else{
-        toast.error(error.response.message);
-      }
-      console.error("Error in gettting cater menu : ", error.message);
+      console.error("Error in getting cater menu:", error.message);
+    } finally {
       setLoading(false);
     }
+  };
+
+  fetchMenu();
 },[refreshMenu])
 
   const handleMenuModalSubmit = async (data)=>{
