@@ -136,6 +136,7 @@ export const Login = () => {
       localStorage.setItem("user", hashedEmail);
       toast.success("Login successful",  {id: toastId});
     }
+    navigate("/home");
     setIsSubmiting(false);
   }
 
