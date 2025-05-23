@@ -27,11 +27,14 @@ const Navbar = () => {
   const handleprofileclick = () => {
     navigate("/profile");
   };
+  const handleHomeClick = () => {
+    navigate("/home");
+  };
 
   return (
     <nav>
       <div className="w-full flex justify-between items-center drop-shadow-lg bg-white">
-        <div className="ml-4">
+        <div className="ml-4 cursor-pointer" onClick={handleHomeClick} >
           <img src={logo} alt="logo" className="w-20 h-20" />
         </div>
         <div className="flex justify-evenly items-center p-3 gap-6 mr-2">
