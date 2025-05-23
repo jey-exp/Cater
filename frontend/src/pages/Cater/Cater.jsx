@@ -82,10 +82,10 @@ const Cater = () => {
   };
 
   return (
-    <div className="h-full bg-blue-50">
+    <div className="bg-blue-50 min-h-screen">
       <Navbar />
-      <div className="flex flex-col h-full justify-center items-center mx-5 w-screen gap-5">
-        <div className="flex justify-between items-center w-full mt-4">
+      <div className="flex flex-col h-full justify-center items-center mx-5 gap-5">
+        <div className="flex justify-between items-center w-screen mt-4 px-5">
           <button
             className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4 rounded drop-shadow-lg"
             onClick={handleBack}
@@ -96,7 +96,7 @@ const Cater = () => {
           <h3 className="text-3xl font-medium">{caterName ? caterName : <span className="text-xl text-slate-500">Loading...</span>}</h3>
           <div></div>
         </div>
-        <div className="flex justify-between w-screen items-center">
+        <div className="flex justify-between w-screen items-center px-5">
           <h5 className="text-3xl">Available Menu:</h5>
           <button
             className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4 mr-10 rounded drop-shadow-lg"

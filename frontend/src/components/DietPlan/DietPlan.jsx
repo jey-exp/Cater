@@ -13,6 +13,8 @@ import * as XLSX from "xlsx";
 import secret_key from "../.config";
 import { decode } from "../../utilities/helper";
 import toast from "react-hot-toast";
+import Navbar from "../Navbar/Navbar";
+import { IoChevronBackOutline } from "react-icons/io5";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -161,24 +163,19 @@ const DietPlan = () => {
   };
 
   return (
-    <div className="h-full bg-blue-50">
-      <div className="flex flex-col h-full justify-center items-center mx-5 w-screen gap-5">
-        <div className="flex justify-between items-center w-screen mt-4">
+    <div className="min-h-screen bg-blue-50 max-w-screen">
+      <Navbar/>
+      <div className="flex flex-col h-full justify-center items-center px-5 max-w-screen gap-5">
+        <div className="flex justify-between items-center w-full mt-4 px-5">
           <button
             className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4 rounded drop-shadow-lg"
             onClick={() => navigate(`/cater/${uuid}`)}
           >
+            <IoChevronBackOutline />
             Back
           </button>
           <h3 className="text-3xl font-medium">Set My Diet Plan</h3>
-          <div className="mr-11">
-            <button
-              className="flex items-center gap-2 bg-custom-blue-123 text-white p-1 pl-2 pr-4 rounded drop-shadow-lg"
-              onClick={() => navigate(`/home`)}
-            >
-              Home
-            </button>
-          </div>
+          <div></div>
         </div>
         <div className="w-11/12 h-3/6 overflow-y-auto flex flex-col gap-5 mb-8 bg-white p-10 rounded-lg drop-shadow-lg">
           <h3 className="font-semibold">Breakfast :</h3>
