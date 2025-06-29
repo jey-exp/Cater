@@ -44,7 +44,7 @@ const DietPlan = () => {
   const [lunch, setLunch] = useState([]);
   const [dinner, setDinner] = useState([]);
   const [selectedFoods, setSelectedFoods] = useState([]);
-  const [openConfirm, setOpenConfirm] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [paymentsuccess, setpaymentsuccess] = useState(false);
   const navigate = useNavigate();
   const { uuid } = useParams();
@@ -128,6 +128,7 @@ const DietPlan = () => {
             alert(response.razorpay_payment_id);
             addtouserProfile();
             setpaymentsuccess(true);
+            setOpenConfirmModal(false);
             console.log("Payment success");
           },
           prefill: {
@@ -326,24 +327,25 @@ const DietPlan = () => {
             <h3 className="text-xl font-medium">
               Total Amount: ₹{totalAmount}
             </h3>
-            <button
-              className="bg-custom-blue-123 text-white p-2 rounded pl-4 pr-4 hover:bg-violet-950"
-              onClick={() => setOpenConfirm(true)}
-            >
-              Confirm Diet
-            </button>
-            {paymentsuccess && (
+            {paymentsuccess ? (
               <button
                 className="bg-custom-blue-123 text-white p-2 rounded pl-4 pr-4 hover:bg-violet-950"
                 onClick={handleDownloadExcel}
               >
                 Download as Excel
               </button>
+            ) : (
+            <button
+              className="bg-custom-blue-123 text-white p-2 rounded pl-4 pr-4 hover:bg-violet-950"
+              onClick={() => setOpenConfirmModal(true)}
+            >
+              Confirm Diet
+            </button>
             )}
           </div>
         </div>
       </div>
-      {openConfirm && (
+      {openConfirmModal && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-5 rounded-lg">
             <h3 className="text-2xl font-medium mb-4">
@@ -381,7 +383,7 @@ const DietPlan = () => {
             <div className="flex justify-end items-center mt-4">
               <button
                 className="bg-gray-500 text-white p-2 rounded pl-4 pr-4 mr-4 hover:bg-gray-700"
-                onClick={() => setOpenConfirm(false)}
+                onClick={() => setOpenConfirmModal(false)}
               >
                 Cancel
               </button>
